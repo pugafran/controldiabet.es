@@ -10,7 +10,7 @@
       .then(data => {
           carbohidratosAlimentos = data;
           alimentos = Object.keys(data);
-          document.getElementById("numero-alimentos").innerHTML = 'Datos sobre ' + alimentos.length + ' alimentos.';
+          document.getElementById("numero-alimentos").innerHTML = 'Datos sobre ' + alimentos.length + ' alimentos extraidos de fundaciondiabetes.org';
 
           $(function() {
               $("#miInput").autocomplete({
