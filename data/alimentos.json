@@ -1,0 +1,9 @@
+{
+    "Manzana": {"carbohidratos": 14, "indiceGlucemico": 40},
+    "Plátano": {"carbohidratos": 22, "indiceGlucemico": 60},
+    "Naranja": {"carbohidratos": 9, "indiceGlucemico": 43},
+    "Fresas": {"carbohidratos": 8, "indiceGlucemico": 40},
+    "Arroz blanco": {"carbohidratos": 30, "indiceGlucemico": 73},
+    "Pollo": {"carbohidratos": 0, "indiceGlucemico": 0},
+    "Pasta": {"carbohidratos": 25, "indiceGlucemico": 55}
+}

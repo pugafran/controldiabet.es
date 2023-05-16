@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Raciones</h1>
+        <h5 id="numero-alimentos"></h5>
+        <div class="input-container">
+            <input id="miInput" type="text"placeholder="Introduce el alimento">
+            <input id="gramos" type="number" min="0" placeholder="Introduce los gramos">
+            <button onclick="calcularRaciones()">Calcular</button>
+            <button onclick="limpiar()">Limpiar</button>
+        </div>
+        <div id="summary-container">
+            <div id="cuadrado" class="indice-glucemico" title="Índice Glucémico Medio = Σ (Raciones de cada alimento * Índice Glucémico de cada alimento) / Σ Raciones totales"></div>
+            <div id="suma-resultado"></div>
+        </div>
+        <div id="resultado"></div>
+    </div>
+    <script src="js/jquery-3.7.0.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+<script src="js/scripts.js"></script>
+
+ 
+
+
+</body>
+</html>
+
+
