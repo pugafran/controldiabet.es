@@ -161,12 +161,8 @@
     "Cerveza": {"carbohidratos": 4.0, "indiceGlucemico": 110},
     "Cerveza sin alcohol": {"carbohidratos": 4.0, "indiceGlucemico": 110},
     "Tónica": {"carbohidratos": 20, "indiceGlucemico": 70},
-    "Zumo de fruta": {"carbohidratos": 20, "indiceGlucemico": 60},
-    "Zumo de tomate": {"carbohidratos": 5, "indiceGlucemico": 35},
     "Zumo de fruta": {"carbohidratos": 10.0, "indiceGlucemico": 60},
     "Zumo de fruta 'sin azúcar añadido'": {"carbohidratos": 4.0, "indiceGlucemico": 45},
     "Zumo de tomate": {"carbohidratos": 5.0, "indiceGlucemico": 35}
-
-
-
+ 
 }
