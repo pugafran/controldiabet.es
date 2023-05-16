@@ -29,7 +29,7 @@
   let totalComidas = 0;
   let totalIndiceGlucemicoPonderado = 0;
   let totalCarbohidratosPonderados = 0;
-  
+  let indiceGlucemicoMedio = 0;
 
   function calcularRaciones() {
     let alimento = document.getElementById("miInput").value;
@@ -71,8 +71,10 @@
     totalCarbohidratos += carbohidratos;
     totalIndiceGlucemicoPonderado += indiceGlucemico * carbohidratos;
     totalCarbohidratosPonderados += carbohidratos;
-
-    let indiceGlucemicoMedio = totalIndiceGlucemicoPonderado / totalCarbohidratosPonderados;
+    if(totalCarbohidratos == 0)
+      indiceGlucemicoMedio = 0;
+    else
+      indiceGlucemicoMedio = totalIndiceGlucemicoPonderado / totalCarbohidratosPonderados;
 
     document.getElementById("cuadrado").style.backgroundColor = getColor(indiceGlucemicoMedio);
     document.getElementById("cuadrado").innerText = "IG Medio";
