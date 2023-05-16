@@ -55,11 +55,19 @@
       padding: 20px;
       background-color: #f8f9fa;
   }
-  
-  .container {
+  /*
+    .container {
       max-width: 600px;
       margin: auto;
   }
+  */
+
+  .container {
+    max-width: 100%;
+    margin: auto;
+    padding: 0 20px;  /* Agrega padding para evitar que el contenido toque los bordes en pantallas pequeñas */
+}
+
   
   .input-container {
       display: flex;
