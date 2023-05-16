@@ -4,30 +4,86 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <link rel="stylesheet" href="css/jquery-ui.min.css" />
     <link rel="icon" type="image/x-icon" href="/data/icono.ico">
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous"
+  />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Controldiabetes</title>
 </head>
-<body>
-    <div class="container">
+<body style="background-color: #f8f9fa">
+    <div class="container justify-content-center" style="max-width: 600px">
         <h1>Calculadora de Raciones</h1>
         <h5 id="numero-alimentos"></h5>
         <p style="font-style: italic; color: gray; font-size: small;">Esta herramienta no debería nunca sustituir el consejo de un profesional sanitario</p>
-        <div class="input-container">
-            <input id="miInput" type="text"placeholder="Introduce el alimento">
-            <input id="gramos" type="number" min="0" placeholder="Introduce los gramos">
-            <button onclick="calcularRaciones()">Calcular</button>
-            <button onclick="limpiar()">Limpiar</button>
+      <div class="container-fluid mb-3" style="padding: 0">
+        <div class="form-inline">
+          <div
+            class="d-flex w-100 justify-content-center justify-content-sm-start flex-column flex-sm-row"
+          >
+          <input
+          id="miInput"
+          class="form-control my-2 mr-2 w-100"
+          style="max-width: 100%; min-width: 200px"
+          type="text"
+          placeholder="Introduce el alimento"
+        />
+        <input
+          id="gramos"
+          type="number"
+          class="form-control my-2 w-100"
+          style="max-width: 100%; min-width: 200px"
+          min="0"
+          placeholder="Introduce los gramos"
+        />
+        <div class="d-flex w-100 justify-content-center align-items-center">
+          <button
+            type="button"
+            class="btn btn-primary mx-2"
+            style="
+              max-width: 100px;
+              min-width: 100px;
+              border-radius: 0px;
+              max-height: 40px;
+            "
+            onclick="calcularRaciones()"
+          >
+            Calcular
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            style="
+              max-width: 100px;
+              min-width: 100px;
+              border-radius: 0px;
+              max-height: 40px;
+            "
+            onclick="limpiar()"
+          >
+            Limpiar
+              </button>
+            </div>
+          </div>
         </div>
-        <div id="summary-container">
-            <div id="cuadrado" class="indice-glucemico" title="Índice Glucémico Medio = Σ (Raciones de cada alimento * Índice Glucémico de cada alimento) / Σ Raciones totales"></div>
+      </div>
+    
+          <div id="summary-container">
+            <div
+              id="cuadrado"
+              class="indice-glucemico"
+              title="Índice Glucémico Medio = Σ (Raciones de cada alimento * Índice Glucémico de cada alimento) / Σ Raciones totales"
+            ></div>
             <div id="suma-resultado"></div>
+          </div>
+          <div id="resultado"></div>
         </div>
-        <div id="resultado"></div>
-    </div>
-    <script src="js/jquery-3.7.0.min.js"></script>
-    <script src="js/jquery-ui.min.js"></script>
-<script src="js/scripts.js"></script>
+        <script src="js/jquery-3.7.0.min.js"></script>
+        <script src="js/jquery-ui.min.js"></script>
+        <script src="js/scripts.js"></script>
 
  
 
