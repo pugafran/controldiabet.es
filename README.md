@@ -15,6 +15,6 @@ Actualmente, la web incluye:
 ## Contribuciones
 Los datos de los alimentos disponibles se hallan en `data/alimentos.json`, muchos se añadieron a mano pero otros muchos otros fueron indexados utilizando chatGPT, de vez en cuando hago revisiones para ver si el valor está bien pero es posible que haya algún valor incorrecto.
 
-Si crees que hay un valor erróneo o quieres añadir algún alimento que se me ha escapado se agradece un pull request, si no tienes conocimientos para ello mándame un mensaje a `puga@puga.page`.
+Si crees que hay un valor erróneo o quieres añadir algún alimento que se me ha escapado se agradece un pull request, si no tienes conocimientos para ello mándame un mensaje a [puga@puga.page](mailto:puga@puga.page).
 
 Los carbohidratos de `data/alimentos.json` se calcula como 1000/(La columna [1 ración de HC son (en gramos)] de fundaciondiabetes.org), si el valor obtenido no coincide con el del .json, el valor del json está mal.
