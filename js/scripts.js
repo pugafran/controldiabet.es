@@ -1,6 +1,15 @@
 
+var dialog = document.getElementById('aboutDialog');
+var aboutIcon = document.getElementById('aboutIcon');
+var closeButton = document.getElementById('closeButton');
 
+aboutIcon.onclick = function() {
+    dialog.showModal();
+}
 
+closeButton.onclick = function() {
+    dialog.close();
+}
 
   let alimentos = {};
   let carbohidratosAlimentos = {};

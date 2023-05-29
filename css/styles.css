@@ -143,3 +143,27 @@ button:hover {
   border: 2px solid #800020;
 }
 
+.about-dialog {
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+}
+
+
+
+
+.about-dialog a {
+  color: inherit;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.about-dialog i {
+  font-size: 1.5em;
+}
+
+#closeButton {
+  margin-top: 20px;
+}
+
+
