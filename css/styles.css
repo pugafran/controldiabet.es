@@ -194,8 +194,10 @@ button:hover {
   border-color: green; /* Color del borde cuando se detecta un código */
 }
 
-.barrasButton{
-  
+Button:disabled {
+  /* Estilo para el botón desactivado */
+  opacity: 0.5; /* Ejemplo: reducir la opacidad del botón */
+  cursor: not-allowed; /* Ejemplo: cambiar el cursor a "no permitido" */
 }
 
 

@@ -93,10 +93,19 @@ closeButton.onclick = function() {
     document.getElementById("suma-resultado").innerText = 'Total: ' + totalCarbohidratos.toFixed(1) + "\nÍndice glucémico medio: " + indiceGlucemicoMedio.toFixed(1);
   }
 
-  function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico, gramos) {
-    if (!gramos || isNaN(gramos) || Number(gramos) < 0) {
-      alert('Por favor, introduce un número válido y no negativo en los gramos.');
-      return;
+  function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico) {
+    
+    let form = document.createElement("form");
+    form.onsubmit = function(event) {
+      event.preventDefault();
+      let gramosInput = document.getElementById("gramosInput");
+      let gramos = gramosInput.value;
+  
+      if (!gramos || isNaN(gramos) || Number(gramos) < 0) {
+        alert('Por favor, introduce un número válido y no negativo en los gramos.');
+        return;
+      }
+
     }
   
     let raciones = carbohidratos * gramos / 1000;
@@ -242,8 +251,8 @@ async function obtenerDatosCarbohidratos(codigoBarras) {
   .then(data => {
     const nombre = data.product.product_name;
     const carbohydrates_100g = data.product.nutriments.carbohydrates_100g;
-    let gramos = prompt('Ingrese la cantidad de gramos para ' + nombre + ':');
-    calcularRacionesBarras(nombre,carbohydrates_100g,0,gramos);
+    
+    calcularRacionesBarras(nombre,carbohydrates_100g,0);
 
   })
   .catch(error => console.error('Error:', error));
@@ -255,3 +264,4 @@ async function obtenerDatosCarbohidratos(codigoBarras) {
 
 }
 
+  
