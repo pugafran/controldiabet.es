@@ -11,6 +11,9 @@ closeButton.onclick = function() {
     dialog.close();
 }
 
+
+
+
   let alimentos = {};
   let carbohidratosAlimentos = {};
 
@@ -118,6 +121,77 @@ closeButton.onclick = function() {
     }
   });
 
+
+  var cameraDialog = document.getElementById('cameraDialog');
+  var closeCameraButton = document.getElementById('closeCameraButton');
+
+  closeCameraButton.onclick = function() {
+    cameraDialog.close();
+    Quagga.stop(); // Detén Quagga cuando se cierre el diálogo
+}
+
+
+
+function codigoBarras(){
+
+  var codes = [];
+
+  Quagga.init({
+    inputStream : {
+      name : "Live",
+      type : "LiveStream",
+      target: document.querySelector("#camara") // Selecciona el elemento por su ID
+    },
+    decoder : {
+      readers : ["ean_reader"] // Asegúrate de que estás utilizando el lector correcto
+    }
+  }, function(err) {
+      if (err) {
+          console.log(err);
+          return
+      }
+      console.log("Initialization finished. Ready to start");
+      Quagga.start();
+  });
+
+  Quagga.onDetected(function(data) {
+    var code = data.codeResult.code;
+    console.log("Code: " + code);
+    var cameraElement = document.getElementById('camara');
+    cameraElement.classList.add('detected');
+
+    // Cambia el color del borde a verde durante 1 segundo
+    setTimeout(function() {
+        cameraElement.classList.remove('detected');
+    }, 1000);
+
+    // Guardar sólo 10 códigos
+    if(codes.length < 30) {
+        codes.push(code);
+    } else {
+        Quagga.stop();
+        // Una vez que tenemos 10 códigos, encontramos el más común
+        var counts = {};
+        for(var i = 0; i < codes.length; i++) {
+            var num = codes[i];
+            counts[num] = counts[num] ? counts[num] + 1 : 1;
+        }
+        
+        // Encontrar el código que más se repite
+        var mostCommonCode = Object.keys(counts).reduce(function(a, b){ return counts[a] > counts[b] ? a : b });
+
+        console.log("Código más común: " + mostCommonCode);
+        document.getElementById("camara").style.visibility = 'hidden';
+        cameraDialog.close(); // Cierra el diálogo cuando Quagga se detiene
+    }
+  });
+  
+}
+
+function openCameraDialog(){
+  cameraDialog.showModal(); // Muestra el diálogo antes de iniciar Quagga
+  codigoBarras(); // Luego inicia Quagga
+}
 
 
 
