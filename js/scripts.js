@@ -93,6 +93,45 @@ closeButton.onclick = function() {
     document.getElementById("suma-resultado").innerText = 'Total: ' + totalCarbohidratos.toFixed(1) + "\nÍndice glucémico medio: " + indiceGlucemicoMedio.toFixed(1);
   }
 
+  function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico, gramos) {
+    if (!gramos || isNaN(gramos) || Number(gramos) < 0) {
+      alert('Por favor, introduce un número válido y no negativo en los gramos.');
+      return;
+    }
+  
+    let raciones = carbohidratos * gramos / 1000;
+  
+    let cuadradoIndividual = document.createElement("div");
+    cuadradoIndividual.style.backgroundColor = getColor(indiceGlucemico);
+    cuadradoIndividual.innerText = "IG";
+    cuadradoIndividual.className = "indice-glucemico-individual";
+  
+    let resultadoIndividual = document.createElement("div");
+    resultadoIndividual.innerText = 'Raciones para ' + gramos + 'g de ' + alimento + ': ' + raciones.toFixed(1);
+    resultadoIndividual.style.display = 'inline-block';
+    resultadoIndividual.style.marginLeft = '5px';
+  
+    let resultadoLinea = document.createElement("div");
+    resultadoLinea.appendChild(cuadradoIndividual);
+    resultadoLinea.appendChild(resultadoIndividual);
+    resultadoLinea.className = "resultado-linea";
+  
+    document.getElementById("resultado").appendChild(resultadoLinea);
+  
+    totalCarbohidratos += raciones;
+    totalIndiceGlucemicoPonderado += indiceGlucemico * raciones;
+    totalCarbohidratosPonderados += raciones;
+    if (totalCarbohidratos == 0)
+      indiceGlucemicoMedio = 0;
+    else
+      indiceGlucemicoMedio = totalIndiceGlucemicoPonderado / totalCarbohidratosPonderados;
+  
+    document.getElementById("cuadrado").style.backgroundColor = getColor(indiceGlucemicoMedio);
+    document.getElementById("cuadrado").innerText = "IG Medio";
+    document.getElementById("suma-resultado").innerText = 'Total: ' + totalCarbohidratos.toFixed(1) + "\nÍndice glucémico medio: " + indiceGlucemicoMedio.toFixed(1);
+  }
+  
+
   function limpiar(){
       document.getElementById("miInput").value = '';
       document.getElementById("gramos").value = '';
@@ -179,7 +218,7 @@ function codigoBarras(){
         
         // Encontrar el código que más se repite
         var mostCommonCode = Object.keys(counts).reduce(function(a, b){ return counts[a] > counts[b] ? a : b });
-
+        obtenerDatosCarbohidratos(mostCommonCode);
         console.log("Código más común: " + mostCommonCode);
         document.getElementById("camara").style.visibility = 'hidden';
         cameraDialog.close(); // Cierra el diálogo cuando Quagga se detiene
@@ -194,4 +233,25 @@ function openCameraDialog(){
 }
 
 
+
+async function obtenerDatosCarbohidratos(codigoBarras) {
+
+  const url = `https://world.openfoodfacts.org/api/v2/product/${codigoBarras}`;
+  fetch(url)
+  .then(response => response.json())
+  .then(data => {
+    const nombre = data.product.product_name;
+    const carbohydrates_100g = data.product.nutriments.carbohydrates_100g;
+    let gramos = prompt('Ingrese la cantidad de gramos para ' + nombre + ':');
+    calcularRacionesBarras(nombre,carbohydrates_100g,0,gramos);
+
+  })
+  .catch(error => console.error('Error:', error));
+
+
+
+
+
+
+}
 

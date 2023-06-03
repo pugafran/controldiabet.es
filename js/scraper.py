@@ -1,10 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 
-import requests
-from bs4 import BeautifulSoup
-
-
 def obtener_datos_carbohidratos(codigo_barras):
     url = f"https://es.openfoodfacts.org/producto/{codigo_barras}"
     response = requests.get(url)
