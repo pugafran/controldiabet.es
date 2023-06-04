@@ -231,6 +231,7 @@ function codigoBarras(){
         
         //document.getElementById("camara").style.visibility = 'hidden';
         cameraDialog.close(); // Cierra el diálogo cuando Quagga se detiene
+        Quagga.offDetected();
         return;
     }
   });
