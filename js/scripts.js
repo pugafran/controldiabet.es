@@ -2,6 +2,7 @@
 var dialog = document.getElementById('aboutDialog');
 var aboutIcon = document.getElementById('aboutIcon');
 var closeButton = document.getElementById('closeButton');
+var codes = [];
 
 aboutIcon.onclick = function() {
     dialog.showModal();
@@ -178,7 +179,7 @@ closeButton.onclick = function() {
 
 function codigoBarras(){
 
-  var codes = [];
+  
 
   Quagga.init({
     inputStream : {
@@ -196,6 +197,8 @@ function codigoBarras(){
       }
       console.log("Initialization finished. Ready to start");
       Quagga.start();
+      document.getElementById("camara").style.visibility = ''
+      
   });
 
   Quagga.onDetected(function(data) {
@@ -225,8 +228,10 @@ function codigoBarras(){
         var mostCommonCode = Object.keys(counts).reduce(function(a, b){ return counts[a] > counts[b] ? a : b });
         obtenerDatosCarbohidratos(mostCommonCode);
         console.log("Código más común: " + mostCommonCode);
-        document.getElementById("camara").style.visibility = 'hidden';
+        
+        //document.getElementById("camara").style.visibility = 'hidden';
         cameraDialog.close(); // Cierra el diálogo cuando Quagga se detiene
+        return;
     }
   });
   
@@ -234,30 +239,28 @@ function codigoBarras(){
 
 function openCameraDialog(){
   cameraDialog.showModal(); // Muestra el diálogo antes de iniciar Quagga
+  codes = [];
   codigoBarras(); // Luego inicia Quagga
 }
 
 
 
 async function obtenerDatosCarbohidratos(codigoBarras) {
-
   const url = `https://world.openfoodfacts.org/api/v2/product/${codigoBarras}`;
-  fetch(url)
-  .then(response => response.json())
-  .then(data => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Error al leer el código de barras, inténtelo de nuevo');
+    }
+    const data = await response.json();
     const nombre = data.product.product_name;
     const carbohydrates_100g = data.product.nutriments.carbohydrates_100g;
-    
-    calcularRacionesBarras(nombre,carbohydrates_100g,0);
-
-  })
-  .catch(error => console.error('Error:', error));
-
-
-
-
-
-
+    calcularRacionesBarras(nombre, carbohydrates_100g, 0);
+  } catch (error) {
+    alert(error.message);
+    return;
+  }
 }
+
 
   
