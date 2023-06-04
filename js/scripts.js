@@ -95,18 +95,14 @@ closeButton.onclick = function() {
 
   function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico) {
     
-    let form = document.createElement("form");
-    form.onsubmit = function(event) {
-      event.preventDefault();
-      let gramosInput = document.getElementById("gramosInput");
-      let gramos = gramosInput.value;
+    let gramos = prompt('Ingrese la cantidad de gramos para ' + alimento + ':');
   
       if (!gramos || isNaN(gramos) || Number(gramos) < 0) {
         alert('Por favor, introduce un número válido y no negativo en los gramos.');
         return;
       }
 
-    }
+    
   
     let raciones = carbohidratos * gramos / 1000;
   
