@@ -265,3 +265,20 @@ async function obtenerDatosCarbohidratos(codigoBarras) {
     return;
   }
 }
+
+var titulo = document.title;
+var favicon = document.getElementById("favicon");
+
+window.addEventListener("blur", () => {
+
+  favicon.href = "data/warning.gif";
+  document.title = "¡Vuelve! 🚨";
+
+})
+
+window.addEventListener("focus", () => {
+  
+    favicon.href = "data/icono.ico";
+    document.title = titulo;
+  
+  })
