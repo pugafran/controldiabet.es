@@ -1,148 +1,175 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <link rel="stylesheet" href="css/jquery-ui.min.css" />
-    <link rel="icon" type="image/x-icon" href="/data/icono.ico" id="favicon">
+    <link rel="icon" type="image/x-icon" href="/data/icono.ico" id="favicon" />
     <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-    crossorigin="anonymous"/>
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
 
-    <!-- 
+    <!--
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    --> 
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    -->
 
-    <meta name="author" content="Francisco Gabriel Puga Lojo">
-    <meta name="language" content="es">
-    <meta name="robots" content="index, follow"> 
-    <meta name="description" content="ControlDiabet.es es una herramienta gratuita para calcular la cantidad de raciones de carbohidratos en comidas para personas con diabetes.">
-    <meta name="keywords" content="Diabetes, ControlDiabetes, Calculadora de raciones, raciones de carbohidratos, herramienta de diabetes, controldiabet.es">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <meta name="author" content="Francisco Gabriel Puga Lojo" />
+    <meta name="language" content="es" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="description"
+      content="ControlDiabet.es es una herramienta gratuita para calcular la cantidad de raciones de carbohidratos en comidas para personas con diabetes."
+    />
+    <meta
+      name="keywords"
+      content="Diabetes, ControlDiabetes, Calculadora de raciones, raciones de carbohidratos, herramienta de diabetes, controldiabet.es"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Controldiabetes</title>
-</head>
-<body style="background-color: #f8f9fa">
-    <div class="container justify-content-center" style="max-width: 700px">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
+  </head>
+  <body style="background-color: #f8f9fa">
+    <div class="justify-content-center container" style="max-width: 700px">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
         <h1>Calculadora de Raciones</h1>
-        <i id="aboutIcon" class="fa-solid fa-circle-info" style="cursor: pointer;"></i>
-        </div>
-        <h5 id="numero-alimentos"></h5>
-        <p class="anotacion">Esta herramienta no debería nunca sustituir el consejo de un profesional sanitario</p>
+        <i
+          id="aboutIcon"
+          class="fa-solid fa-circle-info"
+          style="cursor: pointer"
+        ></i>
+      </div>
+      <h5 id="numero-alimentos"></h5>
+      <p class="anotacion">
+        Esta herramienta no debería nunca sustituir el consejo de un profesional
+        sanitario
+      </p>
       <div class="container-fluid mb-3" style="padding: 0">
         <div class="form-inline">
           <div
             class="d-flex w-100 justify-content-center justify-content-sm-start flex-column flex-sm-row"
           >
-          <input
-          id="miInput"
-          class="form-control my-2 mr-2 w-100"
-          style="max-width: 100%; min-width: 200px"
-          type="text"
-          placeholder="Introduce el alimento"
-        />
-        <input
-          id="gramos"
-          type="number"
-          class="form-control my-2 w-100"
-          style="max-width: 100%; min-width: 200px"
-          min="0"
-          placeholder="Introduce los gramos"
-        />
-        <div class="d-flex w-100 justify-content-center align-items-center">
-          <button
-            type="button"
-            class="btn btn-primary mx-2 col-lg-2"
-            style="
-              max-width: 100px;
-              min-width: 100px;
-              border-radius: 0px;
-              max-height: 40px;
-            "
-            onclick="calcularRaciones()"
-          >
-            Calcular
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary col-lg-2"
-            style="
-              max-width: 100px;
-              min-width: 100px;
-              border-radius: 0px;
-              max-height: 40px;
-            "
-            onclick="limpiar()"
-          >
-            Limpiar
+            <input
+              id="miInput"
+              class="form-control w-100 my-2 mr-2"
+              style="max-width: 100%; min-width: 200px"
+              type="text"
+              placeholder="Introduce el alimento"
+            />
+            <input
+              id="gramos"
+              type="number"
+              class="form-control w-100 my-2"
+              style="max-width: 100%; min-width: 200px"
+              min="0"
+              placeholder="Introduce los gramos"
+            />
+            <div class="d-flex w-100 justify-content-center align-items-center">
+              <button
+                type="button"
+                class="btn btn-primary col-lg-2 mx-2"
+                style="
+                  max-width: 100px;
+                  min-width: 100px;
+                  border-radius: 0px;
+                  max-height: 40px;
+                "
+                onclick="calcularRaciones()"
+              >
+                Calcular
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary col-lg-2"
+                style="
+                  max-width: 100px;
+                  min-width: 100px;
+                  border-radius: 0px;
+                  max-height: 40px;
+                "
+                onclick="limpiar()"
+              >
+                Limpiar
               </button>
             </div>
           </div>
         </div>
       </div>
-      
+
       <dialog id="cameraDialog" class="camera-dialog">
         <div id="camara"></div>
         <div></div>
-        <p class="anotacion" style="text-align: center">(Asegúrese de que la iluminación sea adecuada para poder leer correctamente los datos del código de barras)</p>
+        <p class="anotacion" style="text-align: center">
+          (Asegúrese de que la iluminación sea adecuada para poder leer
+          correctamente los datos del código de barras)
+        </p>
         <button id="closeCameraButton">Cerrar</button>
       </dialog>
-    
-      
-      <button id="startButton" class="barrasButton col-lg-6" onclick="openCameraDialog()"><i class="fa-solid fa-barcode"></i> Leer código de barras</button>
 
-      <br><br><br>
+      <button
+        id="startButton"
+        class="barrasButton col-lg-6"
+        onclick="openCameraDialog()"
+      >
+        <i class="fa-solid fa-barcode"></i> Leer código de barras
+      </button>
+
+      <br /><br /><br />
 
       <dialog id="aboutDialog" class="about-dialog">
         <h2>Acerca de esta página</h2>
-        <p>Esta es una herramienta de cálculo de raciones para el control de la diabetes creada por Francisco Gabriel Puga Lojo. Puedes contribuir al proyecto <a href="https://github.com/pugafran/controldiabet.es">desde aquí.</a></p>
+        <p>
+          Esta es una herramienta de cálculo de raciones para el control de la
+          diabetes creada por Francisco Gabriel Puga Lojo. Puedes contribuir al
+          proyecto
+          <a href="https://github.com/pugafran/controldiabet.es">desde aquí.</a>
+        </p>
         <div>
-          <a href="https://www.linkedin.com/in/francisco-puga-lojo/" target="_blank">
-              <i class="fab fa-linkedin"></i>
+          <a
+            href="https://www.linkedin.com/in/francisco-puga-lojo/"
+            target="_blank"
+          >
+            <i class="fab fa-linkedin"></i>
           </a>
-          <a href="mailto:puga@puga.page">
-              <i class="fas fa-envelope"></i>
+          <a href="mailto:franciscopuga@protonmail.com">
+            <i class="fas fa-envelope"></i>
           </a>
           <a href="https://www.puga.page" target="_blank">
-              <i class="fas fa-globe"></i>
+            <i class="fas fa-globe"></i>
           </a>
           <a href="https://github.com/pugafran" target="_blank">
             <i class="fa-brands fa-github"></i>
-        </a>
+          </a>
         </div>
         <button id="closeButton">Cerrar</button>
       </dialog>
- 
 
- 
-
-
-    
-    
-          <div id="summary-container">
-            <div
-              id="cuadrado"
-              class="indice-glucemico"
-              title="Índice Glucémico Medio = Σ (Raciones de cada alimento * Índice Glucémico de cada alimento) / Σ Raciones totales"
-            ></div>
-            <div id="suma-resultado"></div>
-          </div>
-          <div id="resultado"></div>
-        </div>
-        <script src="js/jquery-3.7.0.min.js"></script>
-        <script src="js/jquery-ui.min.js"></script>
-        <script src="js/quagga.min.js"></script>
-        <script src="js/scripts.js"></script>
-
- 
-
-
-</body>
+      <div id="summary-container">
+        <div
+          id="cuadrado"
+          class="indice-glucemico"
+          title="Índice Glucémico Medio = Σ (Raciones de cada alimento * Índice Glucémico de cada alimento) / Σ Raciones totales"
+        ></div>
+        <div id="suma-resultado"></div>
+      </div>
+      <div id="resultado"></div>
+    </div>
+    <script src="js/jquery-3.7.0.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/quagga.min.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
 </html>
-
-
