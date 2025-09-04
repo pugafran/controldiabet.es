@@ -200,6 +200,49 @@ Button:disabled {
   cursor: not-allowed; /* Ejemplo: cambiar el cursor a "no permitido" */
 }
 
+#historial-container {
+  margin-top: 20px;
+}
+
+#historial li {
+  margin-bottom: 5px;
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .form-control {
+  background-color: #343a40;
+  color: #ffffff;
+  border-color: #495057;
+}
+
+body.dark-mode .anotacion {
+  color: #bbbbbb;
+}
+
+body.dark-mode button {
+  background-color: #0d6efd;
+  color: #ffffff;
+}
+
+body.dark-mode button:hover {
+  background-color: #0b5ed7;
+}
+
+body.dark-mode .export-button {
+  background-color: #bb86fc;
+  color: #000000;
+}
+
+body.dark-mode .export-button:hover {
+  background-color: #ffffff;
+  color: #bb86fc;
+  border: 2px solid #bb86fc;
+}
+
 
 
 
