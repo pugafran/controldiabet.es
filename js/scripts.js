@@ -2,6 +2,9 @@ var dialog = document.getElementById("aboutDialog");
 var aboutIcon = document.getElementById("aboutIcon");
 var closeButton = document.getElementById("closeButton");
 var codes = [];
+var themeToggle = document.getElementById("themeToggle");
+let customFoods = JSON.parse(localStorage.getItem("customFoods")) || {};
+let historial = JSON.parse(localStorage.getItem("historial")) || [];
 
 aboutIcon.onclick = function () {
   dialog.showModal();
@@ -11,14 +14,24 @@ closeButton.onclick = function () {
   dialog.close();
 };
 
+themeToggle.onclick = function () {
+  toggleTheme();
+};
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark-mode");
+  themeToggle.classList.remove("fa-moon");
+  themeToggle.classList.add("fa-sun");
+}
+
 let alimentos = {};
 let carbohidratosAlimentos = {};
 
 fetch("data/alimentos.json")
   .then((response) => response.json())
   .then((data) => {
-    carbohidratosAlimentos = data;
-    alimentos = Object.keys(data);
+    carbohidratosAlimentos = { ...data, ...customFoods };
+    alimentos = Object.keys(carbohidratosAlimentos);
     document.getElementById("numero-alimentos").innerHTML =
       "Datos sobre " +
       alimentos.length +
@@ -29,6 +42,7 @@ fetch("data/alimentos.json")
         source: alimentos,
       });
     });
+    renderHistorial();
   })
   .catch((error) => console.error("Error:", error));
 
@@ -98,6 +112,8 @@ function calcularRaciones() {
     totalCarbohidratos.toFixed(1) +
     "\nÍndice glucémico medio: " +
     indiceGlucemicoMedio.toFixed(1);
+
+  addHistorial(alimento, gramos, carbohidratos);
 }
 
 function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico) {
@@ -144,6 +160,8 @@ function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico) {
     totalCarbohidratos.toFixed(1) +
     "\nÍndice glucémico medio: " +
     indiceGlucemicoMedio.toFixed(1);
+
+  addHistorial(alimento, gramos, raciones);
 }
 
 function limpiar() {
@@ -264,6 +282,75 @@ async function obtenerDatosCarbohidratos(codigoBarras) {
     alert(error.message);
     return;
   }
+}
+
+function agregarAlimento() {
+  let nombre = prompt("Nombre del alimento:");
+  if (!nombre) return;
+  let carb = parseFloat(
+    prompt("Carbohidratos por 100g:")
+  );
+  if (isNaN(carb)) {
+    alert("Valor de carbohidratos no válido");
+    return;
+  }
+  let ig = parseFloat(prompt("Índice glucémico:"));
+  if (isNaN(ig)) ig = 0;
+  customFoods[nombre] = { carbohidratos: carb, indiceGlucemico: ig };
+  localStorage.setItem("customFoods", JSON.stringify(customFoods));
+  carbohidratosAlimentos[nombre] = { carbohidratos: carb, indiceGlucemico: ig };
+  alimentos.push(nombre);
+  $("#miInput").autocomplete("option", "source", alimentos);
+  alert("Alimento añadido");
+}
+
+function addHistorial(alimento, gramos, raciones) {
+  historial.push({ alimento, gramos, raciones });
+  localStorage.setItem("historial", JSON.stringify(historial));
+  renderHistorial();
+}
+
+function renderHistorial() {
+  const lista = document.getElementById("historial");
+  if (!lista) return;
+  lista.innerHTML = "";
+  historial.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(
+      1
+    )} raciones`;
+    lista.appendChild(li);
+  });
+}
+
+function exportarPDF() {
+  if (historial.length === 0) {
+    alert("No hay historial para exportar");
+    return;
+  }
+  const doc = new jsPDF();
+  doc.text("Historial de comidas", 10, 10);
+  historial.forEach((item, index) => {
+    doc.text(
+      `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones`,
+      10,
+      20 + index * 10
+    );
+  });
+  doc.save("historial.pdf");
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  if (isDark) {
+    themeToggle.classList.remove("fa-moon");
+    themeToggle.classList.add("fa-sun");
+  } else {
+    themeToggle.classList.remove("fa-sun");
+    themeToggle.classList.add("fa-moon");
+  }
+  localStorage.setItem("theme", isDark ? "dark" : "light");
 }
 
 var titulo = document.title;
