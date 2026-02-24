@@ -1,4 +1,3 @@
-
 :root {
   --surface: #ffffff;
   --text: #0f172a;
@@ -15,166 +14,123 @@ body.dark-mode {
 
 .anotacion {
   font-style: italic;
-  color: gray;
-  font-size: small;
-}
-
-
-.indice-glucemico {
-  width: 100px;
-  height: 100px;
-  border-radius: 15px;
-  background-color: #f8f9fa;
-  color: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-bottom: 20px;
+  color: #64748b;
+  font-size: 0.875rem;
 }
 
 .indice-glucemico-individual {
   width: 30px;
   height: 30px;
-  border-radius: 5px;
-  background-color: #007bff;
+  border-radius: 8px;
+  background-color: #16a34a;
   color: white;
-  display: inline-flex; /* Ajusta el estilo para que sea inline-flex */
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  margin-right: 5px;
+  font-weight: 700;
+  margin-right: 8px;
 }
 
 .resultado-individual {
   display: inline-block;
-  margin-left: 5px;
+  margin-left: 4px;
+  color: #0f172a;
 }
 
 .resultado-linea {
-  margin-bottom: 5px; /* Ajusta el valor según la separación deseada */
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 12px;
 }
 
 #summary-container {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#cuadrado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1;
 }
 
 #suma-resultado {
-  margin-left: 10px;
   text-align: right;
   flex-grow: 1;
+  color: #064e3b;
+  font-size: 2rem;
+  line-height: 1.2;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  background-color: #f8f9fa;
-}
+@media only screen and (max-width: 640px) {
+  #summary-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-.container {
-  max-width: 600px;
-  margin: auto;
-}
-
-@media only screen and (max-width: 600px) {
-  .container {
-    max-width: 100%;
-    margin: auto;
-    padding: 0 20px; /* Agrega padding para evitar que el contenido toque los bordes en pantallas pequeñas */
+  #suma-resultado {
+    text-align: left;
+    font-size: 1.6rem;
   }
 }
 
-.input-container {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+body {
+  padding: 0;
+  background-color: #f8f9fa;
 }
 
-input {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-}
-
-button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-/* PRUEBAS CSS BOOTSTRAP */
-::-webkit-input-placeholder {
-  font-size: 25px;
-}
-
-:-moz-placeholder {
-  /* Firefox 18- */
-  font-size: 25px;
-}
-
-::-moz-placeholder {
-  /* Firefox 19+ */
-  font-size: 25px;
-}
-
-/* Overriding styles */
-
+/* Overriding placeholder styles */
 ::-webkit-input-placeholder {
   font-size: 13px !important;
 }
 
 :-moz-placeholder {
-  /* Firefox 18- */
   font-size: 13px !important;
 }
+
 ::-moz-placeholder {
-  /* Firefox 19+ */
   font-size: 13px !important;
-}
-
-.export-button {
-  background-color: #800020; /* color vino */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  border-radius: 12px;
-}
-
-.export-button:hover {
-  background-color: white; 
-  color: #800020; 
-  border: 2px solid #800020;
 }
 
 .about-dialog {
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
+  border: none;
+  border-radius: 18px;
+  max-width: 640px;
+  width: min(92vw, 640px);
+  padding: 24px;
+  background: var(--surface, #ffffff);
+  color: var(--text, #0f172a);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
 }
 
+.about-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+}
 
-
-
+.about-dialog p {
+  margin: 12px 0 16px;
+  line-height: 1.5;
+}
 
 .about-dialog a {
   color: inherit;
   text-decoration: none;
-  margin-right: 10px;
+  margin-right: 12px;
 }
 
 .about-dialog i {
@@ -182,7 +138,12 @@ button:hover {
 }
 
 #closeButton {
-  margin-top: 20px;
+  margin-top: 16px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 8px 14px;
 }
 
 /* Mejora del Diálogo de Cámara */
@@ -216,13 +177,9 @@ button:hover {
   object-fit: cover;
 }
 
-/* Visor de escaneo (Overlay) */
 .scanner-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,7 +195,6 @@ button:hover {
   box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
 }
 
-/* Línea de escaneo animada */
 .scanner-line {
   position: absolute;
   width: 100%;
@@ -258,7 +214,6 @@ button:hover {
   }
 }
 
-/* Estado cuando detecta algo */
 #camara.detected + .scanner-overlay .scanner-frame {
   border-color: #22c55e;
   box-shadow: 0 0 0 1000px rgba(22, 163, 74, 0.2);
@@ -277,55 +232,26 @@ button:hover {
   margin-top: 20px;
 }
 
-Button:disabled {
-  /* Estilo para el botón desactivado */
-  opacity: 0.5; /* Ejemplo: reducir la opacidad del botón */
-  cursor: not-allowed; /* Ejemplo: cambiar el cursor a "no permitido" */
-}
-
-#historial-container {
-  margin-top: 20px;
-}
-
-#historial li {
-  margin-bottom: 5px;
-}
-
-body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
-}
-
-body.dark-mode .form-control {
-  background-color: #343a40;
-  color: #ffffff;
-  border-color: #495057;
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 body.dark-mode .anotacion {
-  color: #bbbbbb;
+  color: #cbd5e1;
 }
 
-body.dark-mode button {
-  background-color: #0d6efd;
-  color: #ffffff;
+body.dark-mode .resultado-linea {
+  background: #0f172a;
+  border-color: #334155;
 }
 
-body.dark-mode button:hover {
-  background-color: #0b5ed7;
+body.dark-mode .resultado-individual {
+  color: #e2e8f0;
 }
 
-body.dark-mode .export-button {
-  background-color: #bb86fc;
-  color: #000000;
+body.dark-mode #closeButton {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: #334155;
 }
-
-body.dark-mode .export-button:hover {
-  background-color: #ffffff;
-  color: #bb86fc;
-  border: 2px solid #bb86fc;
-}
-
-
-
-
