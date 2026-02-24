@@ -4,200 +4,169 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <link rel="stylesheet" href="css/jquery-ui.min.css" />
     <link rel="icon" type="image/x-icon" href="/data/icono.ico" id="favicon" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-
-    <!--
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    -->
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <meta name="author" content="Francisco Gabriel Puga Lojo" />
     <meta name="language" content="es" />
     <meta name="robots" content="index, follow" />
-    <meta
-      name="description"
-      content="ControlDiabet.es es una herramienta gratuita para calcular la cantidad de raciones de carbohidratos en comidas para personas con diabetes."
-    />
-    <meta
-      name="keywords"
-      content="Diabetes, ControlDiabetes, Calculadora de raciones, raciones de carbohidratos, herramienta de diabetes, controldiabet.es"
-    />
+    <meta name="description" content="ControlDiabet.es es una herramienta gratuita para calcular la cantidad de raciones de carbohidratos en comidas para personas con diabetes."/>
+    <meta name="keywords" content="Diabetes, ControlDiabetes, Calculadora de raciones, raciones de carbohidratos, herramienta de diabetes, controldiabet.es"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Controldiabetes</title>
   </head>
   <body>
-    <div class="justify-content-center container" style="max-width: 700px">
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <h1>Calculadora de Raciones</h1>
-        <div>
-          <i
-            id="themeToggle"
-            class="fa-solid fa-moon"
-            style="cursor: pointer; margin-right: 10px"
-            title="Cambiar tema"
-          ></i>
-          <i
-            id="aboutIcon"
-            class="fa-solid fa-circle-info"
-            style="cursor: pointer"
-          ></i>
-        </div>
-      </div>
-      <h5 id="numero-alimentos"></h5>
-      <p class="anotacion">
-        Esta herramienta no debería nunca sustituir el consejo de un profesional
-        sanitario
-      </p>
-      <div class="container-fluid mb-3" style="padding: 0">
-        <div class="form-inline">
-          <div
-            class="d-flex w-100 justify-content-center justify-content-sm-start flex-column flex-sm-row"
-          >
-            <input
-              id="miInput"
-              class="form-control w-100 my-2 mr-2"
-              style="max-width: 100%; min-width: 200px"
-              type="text"
-              placeholder="Introduce el alimento"
-            />
-            <input
-              id="gramos"
-              type="number"
-              class="form-control w-100 my-2"
-              style="max-width: 100%; min-width: 200px"
-              min="0"
-              placeholder="Introduce los gramos"
-            />
-            <div class="d-flex w-100 justify-content-center align-items-center">
-              <button
-                type="button"
-                class="btn btn-primary col-lg-2 mx-2"
-                style="
-                  max-width: 100px;
-                  min-width: 100px;
-                  border-radius: 0px;
-                  max-height: 40px;
-                "
-                onclick="calcularRaciones()"
-              >
-                Calcular
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary col-lg-2"
-                style="
-                  max-width: 100px;
-                  min-width: 100px;
-                  border-radius: 0px;
-                  max-height: 40px;
-                "
-                onclick="limpiar()"
-              >
-                Limpiar
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary col-lg-2 mx-2"
-                style="
-                  max-width: 100px;
-                  min-width: 100px;
-                  border-radius: 0px;
-                  max-height: 40px;
-                "
-                onclick="agregarAlimento()"
-              >
-                Añadir
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <dialog id="cameraDialog" class="camera-dialog">
-        <div id="camara"></div>
-        <div></div>
-        <p class="anotacion" style="text-align: center">
-          (Asegúrese de que la iluminación sea adecuada para poder leer
-          correctamente los datos del código de barras)
-        </p>
-        <button id="closeCameraButton">Cerrar</button>
-      </dialog>
-
-      <button
-        id="startButton"
-        class="barrasButton col-lg-6"
-        onclick="openCameraDialog()"
-      >
-        <i class="fa-solid fa-barcode"></i> Leer código de barras
-      </button>
-
-      <br /><br /><br />
-
-      <dialog id="aboutDialog" class="about-dialog">
-        <h2>Acerca de esta página</h2>
-        <p>
-          Esta es una herramienta de cálculo de raciones para el control de la
-          diabetes creada por Francisco Gabriel Puga Lojo. Puedes contribuir al
-          proyecto
-          <a href="https://github.com/pugafran/controldiabet.es">desde aquí.</a>
-        </p>
-        <div>
-          <a
-            href="https://www.linkedin.com/in/francisco-puga-lojo/"
-            target="_blank"
-          >
-            <i class="fab fa-linkedin"></i>
-          </a>
-          <a href="mailto:franciscopuga@protonmail.com">
-            <i class="fas fa-envelope"></i>
-          </a>
-          <a href="https://www.puga.page" target="_blank">
-            <i class="fas fa-globe"></i>
-          </a>
-          <a href="https://github.com/pugafran" target="_blank">
-            <i class="fa-brands fa-github"></i>
-          </a>
-        </div>
-        <button id="closeButton">Cerrar</button>
-      </dialog>
-
-      <div id="summary-container">
-        <div
-          id="cuadrado"
-          class="indice-glucemico"
-          title="Índice Glucémico Medio = Σ (Raciones de cada alimento * Índice Glucémico de cada alimento) / Σ Raciones totales"
-        ></div>
-        <div id="suma-resultado"></div>
-      </div>
-      <div id="resultado"></div>
-      <div id="historial-container" class="mt-4">
-        <h2>Historial</h2>
-        <ul id="historial"></ul>
-        <button
-          class="export-button mt-2"
-          onclick="exportarPDF()"
-        >
-          Exportar historial a PDF
+    <!-- NAV -->
+    <nav class="topnav">
+      <span class="topnav-brand">
+        <span class="brand-dot"></span>
+        ControlDiabetes
+      </span>
+      <div class="topnav-actions">
+        <button class="icon-btn" id="themeToggle" title="Cambiar tema">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="icon-btn" id="aboutIcon" title="Acerca de">
+          <i class="fa-solid fa-circle-info"></i>
         </button>
       </div>
+    </nav>
+
+    <div class="page-wrap">
+
+      <!-- HEADER -->
+      <div class="page-header">
+        <p class="page-eyebrow">Gestión inteligente</p>
+        <h1 class="page-title">Calculadora<br><em>de Raciones</em></h1>
+        <div>
+          <span class="alimentos-badge" id="numero-alimentos">
+            <i class="fa-solid fa-database"></i>
+            Cargando alimentos…
+          </span>
+        </div>
+        <div>
+          <span class="disclaimer">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            No sustituye el consejo de un profesional sanitario.
+          </span>
+        </div>
+      </div>
+
+      <!-- CALCULADORA CARD -->
+      <div class="card-panel">
+        <p class="card-label"><i class="fa-solid fa-calculator"></i> Introduce el alimento</p>
+        <div class="input-row">
+          <input
+            id="miInput"
+            class="form-control"
+            type="text"
+            placeholder="Alimento (ej: pan integral)"
+            autocomplete="off"
+          />
+          <input
+            id="gramos"
+            type="number"
+            class="form-control gramos-input"
+            min="0"
+            placeholder="Gramos"
+          />
+        </div>
+        <div class="btn-row">
+          <button class="btn-cd btn-primary-cd" onclick="calcularRaciones()">
+            <i class="fa-solid fa-play"></i> Calcular
+          </button>
+          <button class="btn-cd btn-outline-cd" onclick="limpiar()">
+            <i class="fa-solid fa-rotate-left"></i> Limpiar
+          </button>
+          <button class="btn-cd btn-secondary-cd" onclick="agregarAlimento()">
+            <i class="fa-solid fa-plus"></i> Añadir alimento
+          </button>
+        </div>
+      </div>
+
+      <!-- ESCÁNER CARD -->
+      <div class="card-panel">
+        <p class="card-label"><i class="fa-solid fa-barcode"></i> Escanear producto</p>
+        <button class="btn-barcode" id="startButton" onclick="openCameraDialog()">
+          <i class="fa-solid fa-camera"></i> Leer código de barras
+        </button>
+        <p class="anotacion">Asegúrese de tener buena iluminación para leer el código correctamente.</p>
+      </div>
+
+      <!-- RESULT SUMMARY -->
+      <div id="summary-container">
+        <div id="cuadrado" class="indice-glucemico" title="Índice Glucémico Medio = Σ(Raciones × IG) / Σ Raciones"></div>
+        <div id="suma-resultado"></div>
+      </div>
+
+      <!-- RESULT LINES -->
+      <div id="resultado"></div>
+
+      <!-- HISTORIAL CARD -->
+      <div class="card-panel" id="historial-container">
+        <p class="card-label"><i class="fa-solid fa-clock-rotate-left"></i> Historial del día</p>
+        <ul id="historial"></ul>
+        <div id="historial-empty" class="historial-empty">
+          <i class="fa-solid fa-bowl-food"></i>
+          Aún no hay alimentos registrados.
+        </div>
+        <button class="export-button" onclick="exportarPDF()">
+          <i class="fa-solid fa-file-pdf"></i> Exportar historial a PDF
+        </button>
+      </div>
+
+      <div class="page-footer">
+        Hecho con ❤️ por
+        <a href="https://github.com/pugafran/controldiabet.es" target="_blank">Francisco Gabriel Puga Lojo</a>
+        &mdash;
+        <a href="https://github.com/pugafran/controldiabet.es" target="_blank">Contribuye en GitHub</a>
+      </div>
     </div>
+
+    <!-- DIALOG: CÁMARA -->
+    <dialog id="cameraDialog" class="camera-dialog">
+      <p class="card-label">
+        <i class="fa-solid fa-camera"></i> Escaneando código de barras
+      </p>
+      <div id="camara"></div>
+      <p class="anotacion centered">
+        Asegúrese de que la iluminación sea adecuada para leer correctamente el código.
+      </p>
+      <button id="closeCameraButton" class="btn-dialog-close btn-dialog-full">
+        <i class="fa-solid fa-xmark"></i> Cerrar
+      </button>
+    </dialog>
+
+    <!-- DIALOG: ABOUT -->
+    <dialog id="aboutDialog" class="about-dialog">
+      <h2>Acerca de esta página</h2>
+      <p>
+        Herramienta de cálculo de raciones para el control de la diabetes creada por
+        <strong>Francisco Gabriel Puga Lojo</strong>. Los datos de alimentos provienen de
+        <a href="https://fundaciondiabetes.org" target="_blank" class="link-accent">fundaciondiabetes.org</a>.
+        Puedes contribuir al proyecto desde GitHub.
+      </p>
+      <div class="about-links">
+        <a href="https://www.linkedin.com/in/francisco-puga-lojo/" target="_blank" title="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="mailto:franciscopuga@protonmail.com" title="Email">
+          <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://www.puga.page" target="_blank" title="Web personal">
+          <i class="fas fa-globe"></i>
+        </a>
+        <a href="https://github.com/pugafran" target="_blank" title="GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+      <button id="closeButton" class="btn-dialog-close">
+        <i class="fa-solid fa-xmark"></i> Cerrar
+      </button>
+    </dialog>
+
     <script src="js/jquery-3.7.0.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/quagga.min.js"></script>
