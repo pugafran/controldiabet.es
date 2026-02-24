@@ -314,12 +314,22 @@ function renderHistorial() {
   const lista = document.getElementById("historial");
   if (!lista) return;
   lista.innerHTML = "";
+
   historial.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(
-      1
-    )} raciones`;
-    lista.appendChild(li);
+    const tr = document.createElement("tr");
+    tr.className = "hover:bg-slate-50 transition-colors";
+
+    const ig = carbohidratosAlimentos[item.alimento]?.indiceGlucemico ?? 0;
+    const igColor = ig < 55 ? "bg-emerald-100 text-emerald-700" : ig < 70 ? "bg-amber-100 text-amber-700" : "bg-rose-100 text-rose-700";
+
+    tr.innerHTML = `
+      <td class="px-6 py-4 font-medium text-slate-700">${item.alimento}</td>
+      <td class="px-6 py-4 text-slate-500">${item.gramos}g</td>
+      <td class="px-6 py-4 font-bold text-blue-600">${item.raciones.toFixed(1)}</td>
+      <td class="px-6 py-4"><span class="px-2 py-1 ${igColor} text-xs font-bold rounded">${ig}</span></td>
+    `;
+
+    lista.appendChild(tr);
   });
 }
 
