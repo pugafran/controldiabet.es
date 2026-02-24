@@ -10,12 +10,6 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-
-    <!--
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    -->
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -37,167 +31,117 @@
     <title>Controldiabetes</title>
   </head>
   <body>
-    <div class="justify-content-center container" style="max-width: 700px">
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <h1>Calculadora de Raciones</h1>
+    <main class="app-shell container">
+      <header class="app-header">
         <div>
-          <i
-            id="themeToggle"
-            class="fa-solid fa-moon"
-            style="cursor: pointer; margin-right: 10px"
-            title="Cambiar tema"
-          ></i>
-          <i
-            id="aboutIcon"
-            class="fa-solid fa-circle-info"
-            style="cursor: pointer"
-          ></i>
+          <p class="app-kicker">ControlDiabet.es</p>
+          <h1>Calculadora de raciones</h1>
+          <p class="anotacion">
+            Esta herramienta no sustituye el consejo de un profesional sanitario.
+          </p>
         </div>
-      </div>
-      <h5 id="numero-alimentos"></h5>
-      <p class="anotacion">
-        Esta herramienta no debería nunca sustituir el consejo de un profesional
-        sanitario
-      </p>
-      <div class="container-fluid mb-3" style="padding: 0">
-        <div class="form-inline">
-          <div
-            class="d-flex w-100 justify-content-center justify-content-sm-start flex-column flex-sm-row"
-          >
-            <input
-              id="miInput"
-              class="form-control w-100 my-2 mr-2"
-              style="max-width: 100%; min-width: 200px"
-              type="text"
-              placeholder="Introduce el alimento"
-            />
-            <input
-              id="gramos"
-              type="number"
-              class="form-control w-100 my-2"
-              style="max-width: 100%; min-width: 200px"
-              min="0"
-              placeholder="Introduce los gramos"
-            />
-            <div class="d-flex w-100 justify-content-center align-items-center">
-              <button
-                type="button"
-                class="btn btn-primary col-lg-2 mx-2"
-                style="
-                  max-width: 100px;
-                  min-width: 100px;
-                  border-radius: 0px;
-                  max-height: 40px;
-                "
-                onclick="calcularRaciones()"
-              >
-                Calcular
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary col-lg-2"
-                style="
-                  max-width: 100px;
-                  min-width: 100px;
-                  border-radius: 0px;
-                  max-height: 40px;
-                "
-                onclick="limpiar()"
-              >
-                Limpiar
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary col-lg-2 mx-2"
-                style="
-                  max-width: 100px;
-                  min-width: 100px;
-                  border-radius: 0px;
-                  max-height: 40px;
-                "
-                onclick="agregarAlimento()"
-              >
-                Añadir
-              </button>
-            </div>
-          </div>
+        <div class="header-actions">
+          <button id="themeToggle" class="icon-button" title="Cambiar tema">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <button id="aboutIcon" class="icon-button" title="Acerca de">
+            <i class="fa-solid fa-circle-info"></i>
+          </button>
         </div>
-      </div>
+      </header>
 
-      <dialog id="cameraDialog" class="camera-dialog">
-        <div id="camara"></div>
-        <div></div>
-        <p class="anotacion" style="text-align: center">
-          (Asegúrese de que la iluminación sea adecuada para poder leer
-          correctamente los datos del código de barras)
-        </p>
-        <button id="closeCameraButton">Cerrar</button>
-      </dialog>
-
-      <button
-        id="startButton"
-        class="barrasButton col-lg-6"
-        onclick="openCameraDialog()"
-      >
-        <i class="fa-solid fa-barcode"></i> Leer código de barras
-      </button>
-
-      <br /><br /><br />
-
-      <dialog id="aboutDialog" class="about-dialog">
-        <h2>Acerca de esta página</h2>
-        <p>
-          Esta es una herramienta de cálculo de raciones para el control de la
-          diabetes creada por Francisco Gabriel Puga Lojo. Puedes contribuir al
-          proyecto
-          <a href="https://github.com/pugafran/controldiabet.es">desde aquí.</a>
-        </p>
-        <div>
-          <a
-            href="https://www.linkedin.com/in/francisco-puga-lojo/"
-            target="_blank"
-          >
-            <i class="fab fa-linkedin"></i>
-          </a>
-          <a href="mailto:franciscopuga@protonmail.com">
-            <i class="fas fa-envelope"></i>
-          </a>
-          <a href="https://www.puga.page" target="_blank">
-            <i class="fas fa-globe"></i>
-          </a>
-          <a href="https://github.com/pugafran" target="_blank">
-            <i class="fa-brands fa-github"></i>
-          </a>
+      <section class="panel">
+        <p id="numero-alimentos" class="meta"></p>
+        <div class="form-grid">
+          <input
+            id="miInput"
+            class="form-control"
+            type="text"
+            placeholder="Introduce el alimento"
+          />
+          <input
+            id="gramos"
+            type="number"
+            class="form-control"
+            min="0"
+            placeholder="Introduce los gramos"
+          />
+          <button type="button" class="btn btn-primary" onclick="calcularRaciones()">
+            Calcular
+          </button>
+          <button type="button" class="btn btn-outline-secondary" onclick="agregarAlimento()">
+            Añadir alimento
+          </button>
+          <button type="button" class="btn btn-outline-danger" onclick="limpiar()">
+            Limpiar
+          </button>
         </div>
-        <button id="closeButton">Cerrar</button>
-      </dialog>
+        <button id="startButton" class="barrasButton" onclick="openCameraDialog()">
+          <i class="fa-solid fa-barcode"></i> Leer código de barras
+        </button>
+      </section>
 
-      <div id="summary-container">
+      <section id="summary-container" class="panel summary-panel">
         <div
           id="cuadrado"
           class="indice-glucemico"
           title="Índice Glucémico Medio = Σ (Raciones de cada alimento * Índice Glucémico de cada alimento) / Σ Raciones totales"
         ></div>
         <div id="suma-resultado"></div>
-      </div>
-      <div id="resultado"></div>
-      <div id="historial-container" class="mt-4">
-        <h2>Historial</h2>
+      </section>
+
+      <section class="panel">
+        <h2 class="section-title">Resultado actual</h2>
+        <div id="resultado"></div>
+      </section>
+
+      <section id="historial-container" class="panel">
+        <div class="history-header">
+          <h2 class="section-title">Historial</h2>
+          <button class="btn btn-sm btn-outline-danger" onclick="vaciarHistorial()">
+            Vaciar
+          </button>
+        </div>
         <ul id="historial"></ul>
-        <button
-          class="export-button mt-2"
-          onclick="exportarPDF()"
-        >
+        <button class="export-button mt-2" onclick="exportarPDF()">
           Exportar historial a PDF
         </button>
+      </section>
+    </main>
+
+    <dialog id="cameraDialog" class="camera-dialog">
+      <div id="camara"></div>
+      <p class="anotacion text-center mt-2">
+        Asegúrate de tener buena iluminación para leer correctamente el código de
+        barras.
+      </p>
+      <button id="closeCameraButton" class="btn btn-secondary">Cerrar</button>
+    </dialog>
+
+    <dialog id="aboutDialog" class="about-dialog">
+      <h2>Acerca de esta página</h2>
+      <p>
+        Herramienta de cálculo de raciones para el control de la diabetes creada por
+        Francisco Gabriel Puga Lojo. Puedes contribuir al proyecto
+        <a href="https://github.com/pugafran/controldiabet.es">desde aquí.</a>
+      </p>
+      <div>
+        <a href="https://www.linkedin.com/in/francisco-puga-lojo/" target="_blank">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="mailto:franciscopuga@protonmail.com">
+          <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://www.puga.page" target="_blank">
+          <i class="fas fa-globe"></i>
+        </a>
+        <a href="https://github.com/pugafran" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
       </div>
-    </div>
+      <button id="closeButton" class="btn btn-primary mt-3">Cerrar</button>
+    </dialog>
+
     <script src="js/jquery-3.7.0.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/quagga.min.js"></script>

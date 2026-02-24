@@ -1,204 +1,160 @@
-var dialog = document.getElementById("aboutDialog");
-var aboutIcon = document.getElementById("aboutIcon");
-var closeButton = document.getElementById("closeButton");
-var codes = [];
-var themeToggle = document.getElementById("themeToggle");
-let customFoods = JSON.parse(localStorage.getItem("customFoods")) || {};
-let historial = JSON.parse(localStorage.getItem("historial")) || [];
-
-aboutIcon.onclick = function () {
-  dialog.showModal();
+const elements = {
+  aboutDialog: document.getElementById("aboutDialog"),
+  aboutIcon: document.getElementById("aboutIcon"),
+  closeButton: document.getElementById("closeButton"),
+  themeToggle: document.getElementById("themeToggle"),
+  inputFood: document.getElementById("miInput"),
+  inputGrams: document.getElementById("gramos"),
+  resultList: document.getElementById("resultado"),
+  summaryBox: document.getElementById("cuadrado"),
+  summaryText: document.getElementById("suma-resultado"),
+  foodsCount: document.getElementById("numero-alimentos"),
+  history: document.getElementById("historial"),
+  cameraDialog: document.getElementById("cameraDialog"),
+  cameraBox: document.getElementById("camara"),
+  closeCameraButton: document.getElementById("closeCameraButton"),
+  favicon: document.getElementById("favicon"),
 };
 
-closeButton.onclick = function () {
-  dialog.close();
+const storage = {
+  customFoods: "customFoods",
+  history: "historial",
+  theme: "theme",
 };
 
-themeToggle.onclick = function () {
-  toggleTheme();
+const state = {
+  codes: [],
+  foods: {},
+  foodNames: [],
+  customFoods: JSON.parse(localStorage.getItem(storage.customFoods)) || {},
+  history: JSON.parse(localStorage.getItem(storage.history)) || [],
+  totalRaciones: 0,
+  totalIgPonderado: 0,
 };
 
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark-mode");
-  themeToggle.classList.remove("fa-moon");
-  themeToggle.classList.add("fa-sun");
+init();
+
+function init() {
+  bindUI();
+  applySavedTheme();
+  loadFoods();
+  renderHistory();
 }
 
-let alimentos = {};
-let carbohidratosAlimentos = {};
+function bindUI() {
+  elements.aboutIcon.onclick = () => elements.aboutDialog.showModal();
+  elements.closeButton.onclick = () => elements.aboutDialog.close();
+  elements.themeToggle.onclick = () => toggleTheme();
+  elements.closeCameraButton.onclick = closeCameraDialog;
 
-fetch("data/alimentos.json")
-  .then((response) => response.json())
-  .then((data) => {
-    carbohidratosAlimentos = { ...data, ...customFoods };
-    alimentos = Object.keys(carbohidratosAlimentos);
-    document.getElementById("numero-alimentos").innerHTML =
-      "Datos sobre " +
-      alimentos.length +
-      " alimentos extraidos de fundaciondiabetes.org";
+  elements.inputGrams.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      calcularRaciones();
+    }
+  });
 
-    $(function () {
-      $("#miInput").autocomplete({
-        source: alimentos,
+  const originalTitle = document.title;
+  window.addEventListener("blur", () => {
+    elements.favicon.href = "data/warning.gif";
+    document.title = "¡Vuelve! 🚨";
+  });
+
+  window.addEventListener("focus", () => {
+    elements.favicon.href = "data/icono.ico";
+    document.title = originalTitle;
+  });
+}
+
+function loadFoods() {
+  fetch("data/alimentos.json")
+    .then((response) => response.json())
+    .then((data) => {
+      state.foods = { ...data, ...state.customFoods };
+      state.foodNames = Object.keys(state.foods).sort((a, b) => a.localeCompare(b));
+      elements.foodsCount.innerText = `Datos sobre ${state.foodNames.length} alimentos extraídos de fundaciondiabetes.org`;
+      $(function () {
+        $("#miInput").autocomplete({
+          source: state.foodNames,
+        });
       });
-    });
-    renderHistorial();
-  })
-  .catch((error) => console.error("Error:", error));
-
-let totalCarbohidratos = 0; // Variable global para mantener el total
-let totalComidas = 0;
-let totalIndiceGlucemicoPonderado = 0;
-let totalCarbohidratosPonderados = 0;
-let indiceGlucemicoMedio = 0;
+    })
+    .catch((error) => console.error("Error cargando alimentos:", error));
+}
 
 function calcularRaciones() {
-  let alimento = document.getElementById("miInput").value;
-  let gramos = document.getElementById("gramos").value;
+  const alimento = elements.inputFood.value.trim();
+  const gramos = Number(elements.inputGrams.value);
 
-  if (!carbohidratosAlimentos.hasOwnProperty(alimento)) {
+  if (!Object.prototype.hasOwnProperty.call(state.foods, alimento)) {
     alert("El alimento ingresado no se encuentra en la lista.");
     return;
   }
 
-  if (!gramos || isNaN(gramos) || Number(gramos) < 0) {
-    alert("Por favor, introduce un número válido y no negativo en los gramos.");
+  if (!Number.isFinite(gramos) || gramos <= 0) {
+    alert("Introduce un número de gramos válido y mayor que 0.");
     return;
   }
 
-  let carbohidratos =
-    (carbohidratosAlimentos[alimento].carbohidratos * gramos) / 1000;
-  let indiceGlucemico = carbohidratosAlimentos[alimento].indiceGlucemico;
+  const { carbohidratos, indiceGlucemico } = state.foods[alimento];
+  const raciones = (carbohidratos * gramos) / 1000;
 
-  let cuadradoIndividual = document.createElement("div");
-  cuadradoIndividual.style.backgroundColor = getColor(indiceGlucemico);
-  cuadradoIndividual.innerText = "IG";
-  cuadradoIndividual.className = "indice-glucemico-individual";
-
-  let resultadoIndividual = document.createElement("div");
-
-  resultadoIndividual.innerText =
-    "Raciones para " +
-    gramos +
-    "g de " +
-    alimento +
-    ": " +
-    carbohidratos.toFixed(1);
-  resultadoIndividual.style.display = "inline-block";
-  resultadoIndividual.style.marginLeft = "5px";
-
-  // Crear un nuevo div para contener el cuadrado y el texto, y añadirlos a él
-  let resultadoLinea = document.createElement("div");
-  resultadoLinea.appendChild(cuadradoIndividual);
-  resultadoLinea.appendChild(resultadoIndividual);
-  resultadoLinea.className = "resultado-linea";
-
-  // Añadir el nuevo div a "#resultado"
-  document.getElementById("resultado").appendChild(resultadoLinea);
-
-  totalCarbohidratos += carbohidratos;
-  totalIndiceGlucemicoPonderado += indiceGlucemico * carbohidratos;
-  totalCarbohidratosPonderados += carbohidratos;
-  if (totalCarbohidratos == 0) indiceGlucemicoMedio = 0;
-  else
-    indiceGlucemicoMedio =
-      totalIndiceGlucemicoPonderado / totalCarbohidratosPonderados;
-
-  document.getElementById("cuadrado").style.backgroundColor =
-    getColor(indiceGlucemicoMedio);
-  document.getElementById("cuadrado").innerText = "IG Medio";
-  document.getElementById("suma-resultado").innerText =
-    "Total: " +
-    totalCarbohidratos.toFixed(1) +
-    "\nÍndice glucémico medio: " +
-    indiceGlucemicoMedio.toFixed(1);
-
-  addHistorial(alimento, gramos, carbohidratos);
+  addCalculationResult(alimento, gramos, raciones, indiceGlucemico);
+  addHistory(alimento, gramos, raciones);
 }
 
-function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico) {
-  let gramos = prompt("Ingrese la cantidad de gramos para " + alimento + ":");
+function addCalculationResult(alimento, gramos, raciones, indiceGlucemico) {
+  const igTag = document.createElement("div");
+  igTag.className = "indice-glucemico-individual";
+  igTag.style.backgroundColor = getColor(indiceGlucemico);
+  igTag.innerText = "IG";
 
-  if (!gramos || isNaN(gramos) || Number(gramos) < 0) {
-    alert("Por favor, introduce un número válido y no negativo en los gramos.");
-    return;
-  }
+  const text = document.createElement("div");
+  text.className = "resultado-individual";
+  text.innerText = `Raciones para ${gramos}g de ${alimento}: ${raciones.toFixed(1)}`;
 
-  let raciones = (carbohidratos * gramos) / 1000;
+  const line = document.createElement("div");
+  line.className = "resultado-linea";
+  line.appendChild(igTag);
+  line.appendChild(text);
 
-  let cuadradoIndividual = document.createElement("div");
-  cuadradoIndividual.style.backgroundColor = getColor(indiceGlucemico);
-  cuadradoIndividual.innerText = "IG";
-  cuadradoIndividual.className = "indice-glucemico-individual";
+  elements.resultList.appendChild(line);
 
-  let resultadoIndividual = document.createElement("div");
-  resultadoIndividual.innerText =
-    "Raciones para " + gramos + "g de " + alimento + ": " + raciones.toFixed(1);
-  resultadoIndividual.style.display = "inline-block";
-  resultadoIndividual.style.marginLeft = "5px";
+  state.totalRaciones += raciones;
+  state.totalIgPonderado += indiceGlucemico * raciones;
+  const igMedio = state.totalRaciones === 0 ? 0 : state.totalIgPonderado / state.totalRaciones;
 
-  let resultadoLinea = document.createElement("div");
-  resultadoLinea.appendChild(cuadradoIndividual);
-  resultadoLinea.appendChild(resultadoIndividual);
-  resultadoLinea.className = "resultado-linea";
-
-  document.getElementById("resultado").appendChild(resultadoLinea);
-
-  totalCarbohidratos += raciones;
-  totalIndiceGlucemicoPonderado += indiceGlucemico * raciones;
-  totalCarbohidratosPonderados += raciones;
-  if (totalCarbohidratos == 0) indiceGlucemicoMedio = 0;
-  else
-    indiceGlucemicoMedio =
-      totalIndiceGlucemicoPonderado / totalCarbohidratosPonderados;
-
-  document.getElementById("cuadrado").style.backgroundColor =
-    getColor(indiceGlucemicoMedio);
-  document.getElementById("cuadrado").innerText = "IG Medio";
-  document.getElementById("suma-resultado").innerText =
-    "Total: " +
-    totalCarbohidratos.toFixed(1) +
-    "\nÍndice glucémico medio: " +
-    indiceGlucemicoMedio.toFixed(1);
-
-  addHistorial(alimento, gramos, raciones);
+  elements.summaryBox.style.backgroundColor = getColor(igMedio);
+  elements.summaryBox.innerText = "IG medio";
+  elements.summaryText.innerText = `Total: ${state.totalRaciones.toFixed(1)}\nÍndice glucémico medio: ${igMedio.toFixed(1)}`;
 }
 
 function limpiar() {
-  document.getElementById("miInput").value = "";
-  document.getElementById("gramos").value = "";
-  document.getElementById("resultado").innerText = "";
-  document.getElementById("suma-resultado").innerText = "";
-  document.getElementById("cuadrado").style.backgroundColor = "#f8f9fa";
-  document.getElementById("cuadrado").innerText = "";
-  totalCarbohidratos = 0; // Restablecer la variable global
-  totalIndiceGlucemico = 0;
-  totalComidas = 0;
+  elements.inputFood.value = "";
+  elements.inputGrams.value = "";
+  elements.resultList.innerHTML = "";
+  elements.summaryText.innerText = "";
+  elements.summaryBox.style.backgroundColor = "#c9d2e4";
+  elements.summaryBox.innerText = "";
+  state.totalRaciones = 0;
+  state.totalIgPonderado = 0;
 }
 
 function getColor(indiceGlucemico) {
-  if (indiceGlucemico < 55) {
-    return "green";
-  } else if (indiceGlucemico < 70) {
-    return "orange";
-  } else {
-    return "red";
-  }
+  if (indiceGlucemico < 55) return "#16a34a";
+  if (indiceGlucemico < 70) return "#f59e0b";
+  return "#dc2626";
 }
 
-document.getElementById("gramos").addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    calcularRaciones();
-  }
-});
+function closeCameraDialog() {
+  elements.cameraDialog.close();
+  Quagga.stop();
+}
 
-var cameraDialog = document.getElementById("cameraDialog");
-var closeCameraButton = document.getElementById("closeCameraButton");
-
-closeCameraButton.onclick = function () {
-  cameraDialog.close();
-  Quagga.stop(); // Detén Quagga cuando se cierre el diálogo
-};
+function openCameraDialog() {
+  elements.cameraDialog.showModal();
+  state.codes = [];
+  codigoBarras();
+}
 
 function codigoBarras() {
   Quagga.init(
@@ -206,65 +162,44 @@ function codigoBarras() {
       inputStream: {
         name: "Live",
         type: "LiveStream",
-        target: document.querySelector("#camara"), // Selecciona el elemento por su ID
+        target: elements.cameraBox,
       },
       decoder: {
-        readers: ["ean_reader"], // Asegúrate de que estás utilizando el lector correcto
+        readers: ["ean_reader"],
       },
     },
-    function (err) {
+    (err) => {
       if (err) {
-        console.log(err);
+        console.error(err);
         return;
       }
-      console.log("Initialization finished. Ready to start");
       Quagga.start();
-      document.getElementById("camara").style.visibility = "";
     }
   );
 
-  Quagga.onDetected(function (data) {
-    var code = data.codeResult.code;
-    console.log("Code: " + code);
-    var cameraElement = document.getElementById("camara");
-    cameraElement.classList.add("detected");
+  Quagga.onDetected((data) => {
+    const code = data.codeResult.code;
+    elements.cameraBox.classList.add("detected");
+    setTimeout(() => elements.cameraBox.classList.remove("detected"), 1000);
 
-    // Cambia el color del borde a verde durante 1 segundo
-    setTimeout(function () {
-      cameraElement.classList.remove("detected");
-    }, 1000);
-
-    // Guardar sólo 10 códigos
-    if (codes.length < 30) {
-      codes.push(code);
-    } else {
-      Quagga.stop();
-      // Una vez que tenemos 10 códigos, encontramos el más común
-      var counts = {};
-      for (var i = 0; i < codes.length; i++) {
-        var num = codes[i];
-        counts[num] = counts[num] ? counts[num] + 1 : 1;
-      }
-
-      // Encontrar el código que más se repite
-      var mostCommonCode = Object.keys(counts).reduce(function (a, b) {
-        return counts[a] > counts[b] ? a : b;
-      });
-      obtenerDatosCarbohidratos(mostCommonCode);
-      console.log("Código más común: " + mostCommonCode);
-
-      //document.getElementById("camara").style.visibility = 'hidden';
-      cameraDialog.close(); // Cierra el diálogo cuando Quagga se detiene
-      Quagga.offDetected();
+    if (state.codes.length < 30) {
+      state.codes.push(code);
       return;
     }
-  });
-}
 
-function openCameraDialog() {
-  cameraDialog.showModal(); // Muestra el diálogo antes de iniciar Quagga
-  codes = [];
-  codigoBarras(); // Luego inicia Quagga
+    Quagga.stop();
+    const counts = state.codes.reduce((acc, item) => {
+      acc[item] = (acc[item] || 0) + 1;
+      return acc;
+    }, {});
+    const mostCommonCode = Object.keys(counts).reduce((a, b) =>
+      counts[a] > counts[b] ? a : b
+    );
+
+    obtenerDatosCarbohidratos(mostCommonCode);
+    elements.cameraDialog.close();
+    Quagga.offDetected();
+  });
 }
 
 async function obtenerDatosCarbohidratos(codigoBarras) {
@@ -272,100 +207,110 @@ async function obtenerDatosCarbohidratos(codigoBarras) {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error("Error al leer el código de barras, inténtelo de nuevo");
+      throw new Error("Error al leer el código de barras, inténtalo de nuevo.");
     }
+
     const data = await response.json();
-    const nombre = data.product.product_name;
-    const carbohydrates_100g = data.product.nutriments.carbohydrates_100g;
-    calcularRacionesBarras(nombre, carbohydrates_100g, 0);
+    const nombre = data.product?.product_name;
+    const carbohydrates = data.product?.nutriments?.carbohydrates_100g;
+
+    if (!nombre || !Number.isFinite(carbohydrates)) {
+      throw new Error("No se pudieron obtener datos válidos del producto.");
+    }
+
+    const gramosTexto = prompt(`Introduce la cantidad de gramos para ${nombre}:`);
+    const gramos = Number(gramosTexto);
+    if (!Number.isFinite(gramos) || gramos <= 0) {
+      alert("Introduce un número de gramos válido y mayor que 0.");
+      return;
+    }
+
+    const raciones = (carbohydrates * gramos) / 1000;
+    addCalculationResult(nombre, gramos, raciones, 0);
+    addHistory(nombre, gramos, raciones);
   } catch (error) {
     alert(error.message);
-    return;
   }
 }
 
 function agregarAlimento() {
-  let nombre = prompt("Nombre del alimento:");
+  const nombre = prompt("Nombre del alimento:");
   if (!nombre) return;
-  let carb = parseFloat(
-    prompt("Carbohidratos por 100g:")
-  );
-  if (isNaN(carb)) {
-    alert("Valor de carbohidratos no válido");
+
+  const carb = Number(prompt("Carbohidratos por 100g:"));
+  if (!Number.isFinite(carb) || carb < 0) {
+    alert("Valor de carbohidratos no válido.");
     return;
   }
-  let ig = parseFloat(prompt("Índice glucémico:"));
-  if (isNaN(ig)) ig = 0;
-  customFoods[nombre] = { carbohidratos: carb, indiceGlucemico: ig };
-  localStorage.setItem("customFoods", JSON.stringify(customFoods));
-  carbohidratosAlimentos[nombre] = { carbohidratos: carb, indiceGlucemico: ig };
-  alimentos.push(nombre);
-  $("#miInput").autocomplete("option", "source", alimentos);
-  alert("Alimento añadido");
+
+  let ig = Number(prompt("Índice glucémico:"));
+  if (!Number.isFinite(ig) || ig < 0) ig = 0;
+
+  const normalizedName = nombre.trim();
+  state.customFoods[normalizedName] = { carbohidratos: carb, indiceGlucemico: ig };
+  localStorage.setItem(storage.customFoods, JSON.stringify(state.customFoods));
+
+  state.foods[normalizedName] = { carbohidratos: carb, indiceGlucemico: ig };
+  state.foodNames = Object.keys(state.foods).sort((a, b) => a.localeCompare(b));
+  $("#miInput").autocomplete("option", "source", state.foodNames);
+  elements.foodsCount.innerText = `Datos sobre ${state.foodNames.length} alimentos extraídos de fundaciondiabetes.org`;
+
+  alert("Alimento añadido correctamente.");
 }
 
-function addHistorial(alimento, gramos, raciones) {
-  historial.push({ alimento, gramos, raciones });
-  localStorage.setItem("historial", JSON.stringify(historial));
-  renderHistorial();
+function addHistory(alimento, gramos, raciones) {
+  state.history.push({ alimento, gramos, raciones, fecha: new Date().toISOString() });
+  localStorage.setItem(storage.history, JSON.stringify(state.history));
+  renderHistory();
 }
 
-function renderHistorial() {
-  const lista = document.getElementById("historial");
-  if (!lista) return;
-  lista.innerHTML = "";
-  historial.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(
-      1
-    )} raciones`;
-    lista.appendChild(li);
-  });
+function renderHistory() {
+  if (!elements.history) return;
+
+  elements.history.innerHTML = "";
+  state.history
+    .slice()
+    .reverse()
+    .forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones`;
+      elements.history.appendChild(li);
+    });
+}
+
+function vaciarHistorial() {
+  if (!confirm("¿Seguro que quieres vaciar el historial?")) return;
+  state.history = [];
+  localStorage.setItem(storage.history, JSON.stringify(state.history));
+  renderHistory();
 }
 
 function exportarPDF() {
-  if (historial.length === 0) {
-    alert("No hay historial para exportar");
+  if (state.history.length === 0) {
+    alert("No hay historial para exportar.");
     return;
   }
+
   const doc = new jsPDF();
   doc.text("Historial de comidas", 10, 10);
-  historial.forEach((item, index) => {
-    doc.text(
-      `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones`,
-      10,
-      20 + index * 10
-    );
+  state.history.forEach((item, index) => {
+    doc.text(`${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones`, 10, 20 + index * 10);
   });
   doc.save("historial.pdf");
+}
+
+function applySavedTheme() {
+  if (localStorage.getItem(storage.theme) === "dark") {
+    document.body.classList.add("dark-mode");
+    elements.themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+  }
 }
 
 function toggleTheme() {
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
-  if (isDark) {
-    themeToggle.classList.remove("fa-moon");
-    themeToggle.classList.add("fa-sun");
-  } else {
-    themeToggle.classList.remove("fa-sun");
-    themeToggle.classList.add("fa-moon");
-  }
-  localStorage.setItem("theme", isDark ? "dark" : "light");
+  elements.themeToggle.innerHTML = isDark
+    ? '<i class="fa-solid fa-sun"></i>'
+    : '<i class="fa-solid fa-moon"></i>';
+  localStorage.setItem(storage.theme, isDark ? "dark" : "light");
 }
-
-var titulo = document.title;
-var favicon = document.getElementById("favicon");
-
-window.addEventListener("blur", () => {
-
-  favicon.href = "data/warning.gif";
-  document.title = "¡Vuelve! 🚨";
-
-})
-
-window.addEventListener("focus", () => {
-  
-    favicon.href = "data/icono.ico";
-    document.title = titulo;
-  
-  })
