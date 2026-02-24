@@ -229,11 +229,29 @@
     </main>
 
     <dialog id="cameraDialog" class="camera-dialog">
-      <div id="camara"></div>
-      <p class="anotacion text-center mt-2">
-        (Asegúrese de que la iluminación sea adecuada para poder leer correctamente el código de barras)
-      </p>
-      <button id="closeCameraButton">Cerrar</button>
+      <div class="text-center mb-4">
+        <h3 class="text-xl font-semibold">Escanear producto</h3>
+        <p class="anotacion">Enfoca el código de barras dentro del cuadro</p>
+      </div>
+      <div class="camera-container">
+        <div id="camara"></div>
+        <div class="scanner-overlay">
+          <div class="scanner-frame">
+            <div class="scanner-line"></div>
+          </div>
+        </div>
+      </div>
+      <div class="camera-dialog-footer">
+        <p class="anotacion text-center">
+          <i class="fa-solid fa-lightbulb mr-1"></i> Asegúrate de tener buena iluminación
+        </p>
+        <button
+          id="closeCameraButton"
+          class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-4 rounded-xl transition-all"
+        >
+          Cancelar
+        </button>
+      </div>
     </dialog>
 
     <dialog id="aboutDialog" class="about-dialog">
