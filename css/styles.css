@@ -1,164 +1,177 @@
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #1e2533;
+  --muted: #6b7280;
+  --brand: #2f6fed;
+  --brand-soft: #eaf1ff;
+  --danger: #b42318;
+  --shadow: 0 8px 25px rgba(9, 30, 66, 0.08);
+}
+
 * {
   box-sizing: border-box;
 }
 
+body {
+  font-family: "Inter", Arial, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  padding: 20px 0;
+}
+
+.app-shell {
+  max-width: 860px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.app-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  font-weight: 700;
+  margin: 0;
+}
+
 .anotacion {
   font-style: italic;
-  color: gray;
-  font-size: small;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0;
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-button {
+  background: var(--surface);
+  border: 1px solid #d6dbe7;
+  color: var(--text);
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.meta {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.form-grid .btn {
+  min-height: 42px;
+}
+
+.barrasButton {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #0f766e, #0ea5e9);
+}
+
+.summary-panel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
 .indice-glucemico {
-  width: 100px;
-  height: 100px;
-  border-radius: 15px;
-  background-color: #f8f9fa;
-  color: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.indice-glucemico-individual {
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
-  background-color: #007bff;
+  width: 88px;
+  height: 88px;
+  border-radius: 12px;
+  background-color: #c9d2e4;
   color: white;
-  display: inline-flex; /* Ajusta el estilo para que sea inline-flex */
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.resultado-individual {
-  display: inline-block;
-  margin-left: 5px;
-}
-
-.resultado-linea {
-  margin-bottom: 5px; /* Ajusta el valor según la separación deseada */
-}
-
-#summary-container {
   display: flex;
   align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 #suma-resultado {
-  margin-left: 10px;
-  text-align: right;
-  flex-grow: 1;
+  white-space: pre-line;
+  font-weight: 600;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  background-color: #f8f9fa;
+.section-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
 }
 
-.container {
-  max-width: 600px;
-  margin: auto;
-}
-
-@media only screen and (max-width: 600px) {
-  .container {
-    max-width: 100%;
-    margin: auto;
-    padding: 0 20px; /* Agrega padding para evitar que el contenido toque los bordes en pantallas pequeñas */
-  }
-}
-
-.input-container {
+.resultado-linea {
+  margin-bottom: 0.5rem;
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  align-items: center;
 }
 
-input {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-}
-
-button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #007bff;
+.indice-glucemico-individual {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
   color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 8px;
+  font-size: 0.8rem;
 }
 
-button:hover {
-  background-color: #0056b3;
+#historial {
+  padding-left: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
-/* PRUEBAS CSS BOOTSTRAP */
-::-webkit-input-placeholder {
-  font-size: 25px;
+#historial li {
+  margin-bottom: 4px;
 }
 
-:-moz-placeholder {
-  /* Firefox 18- */
-  font-size: 25px;
-}
-
-::-moz-placeholder {
-  /* Firefox 19+ */
-  font-size: 25px;
-}
-
-/* Overriding styles */
-
-::-webkit-input-placeholder {
-  font-size: 13px !important;
-}
-
-:-moz-placeholder {
-  /* Firefox 18- */
-  font-size: 13px !important;
-}
-::-moz-placeholder {
-  /* Firefox 19+ */
-  font-size: 13px !important;
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .export-button {
-  background-color: #800020; /* color vino */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  transition-duration: 0.4s;
-  cursor: pointer;
+  width: 100%;
   border-radius: 12px;
+  background: #800020;
 }
 
-.export-button:hover {
-  background-color: white; 
-  color: #800020; 
-  border: 2px solid #800020;
-}
-
-.about-dialog {
+.about-dialog,
+.camera-dialog {
   max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
+  border: none;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
 }
-
-
-
-
 
 .about-dialog a {
   color: inherit;
@@ -166,83 +179,41 @@ button:hover {
   margin-right: 10px;
 }
 
-.about-dialog i {
-  font-size: 1.5em;
-}
-
-#closeButton {
-  margin-top: 20px;
-}
-
-#closeCameraButton {
-  margin-top: 20px;
-  width: 100%;
-}
-
 #camara {
   margin-top: 10px;
-  border: 3px solid transparent; /* Color inicial del borde */
-  transition: border-color 1s; /* Esta línea hace que el cambio de color sea gradual durante 1 segundo */
-  align-items: center;
-  width: 640px;   
-  height: 480px;  
+  border: 3px solid transparent;
+  transition: border-color 1s;
+  width: 640px;
+  max-width: 100%;
+  height: 420px;
   overflow: hidden;
-
 }
 
 #camara.detected {
-  border-color: green; /* Color del borde cuando se detecta un código */
-}
-
-Button:disabled {
-  /* Estilo para el botón desactivado */
-  opacity: 0.5; /* Ejemplo: reducir la opacidad del botón */
-  cursor: not-allowed; /* Ejemplo: cambiar el cursor a "no permitido" */
-}
-
-#historial-container {
-  margin-top: 20px;
-}
-
-#historial li {
-  margin-bottom: 5px;
+  border-color: #16a34a;
 }
 
 body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
+  --bg: #0b1220;
+  --surface: #121a2b;
+  --text: #edf2ff;
+  --muted: #94a3b8;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 body.dark-mode .form-control {
-  background-color: #343a40;
+  background-color: #0f172a;
   color: #ffffff;
-  border-color: #495057;
+  border-color: #334155;
 }
 
-body.dark-mode .anotacion {
-  color: #bbbbbb;
+@media only screen and (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
-
-body.dark-mode button {
-  background-color: #0d6efd;
-  color: #ffffff;
-}
-
-body.dark-mode button:hover {
-  background-color: #0b5ed7;
-}
-
-body.dark-mode .export-button {
-  background-color: #bb86fc;
-  color: #000000;
-}
-
-body.dark-mode .export-button:hover {
-  background-color: #ffffff;
-  color: #bb86fc;
-  border: 2px solid #bb86fc;
-}
-
-
-
-
