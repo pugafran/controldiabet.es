@@ -172,7 +172,9 @@ function limpiar() {
   document.getElementById("cuadrado").style.backgroundColor = "#f8f9fa";
   document.getElementById("cuadrado").innerText = "";
   totalCarbohidratos = 0; // Restablecer la variable global
-  totalIndiceGlucemico = 0;
+  totalIndiceGlucemicoPonderado = 0;
+  totalCarbohidratosPonderados = 0;
+  indiceGlucemicoMedio = 0;
   totalComidas = 0;
 }
 
