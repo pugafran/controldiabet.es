@@ -5,6 +5,7 @@ var codes = [];
 var themeToggle = document.getElementById("themeToggle");
 let customFoods = JSON.parse(localStorage.getItem("customFoods")) || {};
 let historial = JSON.parse(localStorage.getItem("historial")) || [];
+let cachedProducts = JSON.parse(localStorage.getItem("cachedProducts")) || {};
 
 aboutIcon.onclick = function () {
   dialog.showModal();
@@ -52,9 +53,26 @@ let totalIndiceGlucemicoPonderado = 0;
 let totalCarbohidratosPonderados = 0;
 let indiceGlucemicoMedio = 0;
 
+function _normalizeFoodKey(s) {
+  return String(s || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+}
+
 function calcularRaciones() {
-  let alimento = document.getElementById("miInput").value;
+  let alimentoRaw = document.getElementById("miInput").value;
   let gramos = document.getElementById("gramos").value;
+
+  // Case/diacritics-insensitive matching.
+  const foodKey = _normalizeFoodKey(alimentoRaw);
+  let alimento = alimentoRaw;
+  if (!carbohidratosAlimentos.hasOwnProperty(alimento)) {
+    const map = {};
+    for (const k of Object.keys(carbohidratosAlimentos)) map[_normalizeFoodKey(k)] = k;
+    if (map[foodKey]) alimento = map[foodKey];
+  }
 
   if (!carbohidratosAlimentos.hasOwnProperty(alimento)) {
     alert("El alimento ingresado no se encuentra en la lista.");
@@ -178,6 +196,7 @@ function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico) {
 }
 
 function limpiar() {
+  // Limpia inputs/resultados de la sesión actual (no borra el historial guardado).
   document.getElementById("miInput").value = "";
   document.getElementById("gramos").value = "";
   document.getElementById("resultado").innerText = "";
@@ -189,8 +208,10 @@ function limpiar() {
   totalCarbohidratosPonderados = 0;
   indiceGlucemicoMedio = 0;
   totalComidas = 0;
+}
 
-  // También limpiar el historial persistente.
+function limpiarHistorial() {
+  if (!confirm("¿Borrar historial guardado?")) return;
   historial = [];
   localStorage.removeItem("historial");
   renderHistorial();
@@ -204,6 +225,14 @@ function getColor(indiceGlucemico) {
   } else {
     return "red";
   }
+}
+
+function ajustarGramos(delta) {
+  const el = document.getElementById("gramos");
+  const v = parseFloat(el.value || "0");
+  const next = Math.max(0, Math.round((isNaN(v) ? 0 : v) + delta));
+  el.value = String(next);
+  el.focus();
 }
 
 document.getElementById("gramos").addEventListener("keypress", function (e) {
@@ -288,6 +317,13 @@ function openCameraDialog() {
 }
 
 async function obtenerDatosCarbohidratos(codigoBarras) {
+  // Cache scanned products locally.
+  if (cachedProducts[codigoBarras]) {
+    const p = cachedProducts[codigoBarras];
+    calcularRacionesBarras(p.nombre, p.carbohydrates_100g, p.indiceGlucemico || 0);
+    return;
+  }
+
   const url = `https://world.openfoodfacts.org/api/v2/product/${codigoBarras}`;
   try {
     const response = await fetch(url);
@@ -295,8 +331,35 @@ async function obtenerDatosCarbohidratos(codigoBarras) {
       throw new Error("Error al leer el código de barras, inténtelo de nuevo");
     }
     const data = await response.json();
-    const nombre = data.product.product_name;
-    const carbohydrates_100g = data.product.nutriments.carbohydrates_100g;
+    const nombre = (data.product && data.product.product_name) || "";
+    const carbohydrates_100g = data.product && data.product.nutriments ? data.product.nutriments.carbohydrates_100g : null;
+
+    if (!nombre || carbohydrates_100g == null) {
+      // Allow the user to fill missing data and store it as custom food + cache.
+      const n = prompt("No pude obtener datos. Nombre del alimento:");
+      if (!n) return;
+      const carb = parseFloat(prompt("Carbohidratos por 100g:") || "");
+      if (isNaN(carb)) {
+        alert("Valor de carbohidratos no válido");
+        return;
+      }
+      const ig = parseFloat(prompt("Índice glucémico (opcional):") || "0");
+      cachedProducts[codigoBarras] = { nombre: n, carbohydrates_100g: carb, indiceGlucemico: isNaN(ig) ? 0 : ig };
+      localStorage.setItem("cachedProducts", JSON.stringify(cachedProducts));
+
+      customFoods[n] = { carbohidratos: carb, indiceGlucemico: isNaN(ig) ? 0 : ig };
+      localStorage.setItem("customFoods", JSON.stringify(customFoods));
+      carbohidratosAlimentos[n] = { carbohidratos: carb, indiceGlucemico: isNaN(ig) ? 0 : ig };
+      if (!alimentos.includes(n)) alimentos.push(n);
+      $("#miInput").autocomplete("option", "source", alimentos);
+
+      calcularRacionesBarras(n, carb, isNaN(ig) ? 0 : ig);
+      return;
+    }
+
+    cachedProducts[codigoBarras] = { nombre, carbohydrates_100g, indiceGlucemico: 0 };
+    localStorage.setItem("cachedProducts", JSON.stringify(cachedProducts));
+
     calcularRacionesBarras(nombre, carbohydrates_100g, 0);
   } catch (error) {
     alert(error.message);
@@ -325,7 +388,8 @@ function agregarAlimento() {
 }
 
 function addHistorial(alimento, gramos, raciones) {
-  historial.push({ alimento, gramos, raciones });
+  // Store a timestamp so we can group by day.
+  historial.push({ alimento, gramos, raciones, ts: Date.now() });
   localStorage.setItem("historial", JSON.stringify(historial));
   renderHistorial();
 }
@@ -334,14 +398,49 @@ function renderHistorial() {
   const lista = document.getElementById("historial");
   if (!lista) return;
   lista.innerHTML = "";
-  historial.forEach((item) => {
-    const li = document.createElement("li");
-    const hc = item.raciones * 10;
-    li.textContent = `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(
-      1
-    )} raciones (${hc.toFixed(1)} HC)`;
-    lista.appendChild(li);
+
+  // Group by local day.
+  const groups = {};
+  for (const item of historial) {
+    const ts = item.ts || Date.now();
+    const d = new Date(ts);
+    const key = d.toLocaleDateString("es-ES");
+    groups[key] = groups[key] || [];
+    groups[key].push({ ...item, ts });
+  }
+
+  const days = Object.keys(groups).sort((a, b) => {
+    // Sort by date descending using a best-effort parse.
+    const pa = Date.parse(a.split("/").reverse().join("-"));
+    const pb = Date.parse(b.split("/").reverse().join("-"));
+    return (isNaN(pb) ? 0 : pb) - (isNaN(pa) ? 0 : pa);
   });
+
+  for (const day of days) {
+    const header = document.createElement("li");
+    header.textContent = `📅 ${day}`;
+    header.style.fontWeight = "bold";
+    lista.appendChild(header);
+
+    let dayRaciones = 0;
+    for (const item of groups[day]) {
+      const li = document.createElement("li");
+      const ts = new Date(item.ts);
+      const hhmm = ts.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+      const hc = item.raciones * 10;
+      dayRaciones += item.raciones;
+      li.textContent = `${hhmm} · ${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(
+        1
+      )} raciones (${hc.toFixed(0)} HC)`;
+      lista.appendChild(li);
+    }
+
+    const totals = document.createElement("li");
+    totals.style.opacity = "0.8";
+    totals.style.marginBottom = "10px";
+    totals.textContent = `Total día: ${dayRaciones.toFixed(1)} raciones (${(dayRaciones * 10).toFixed(0)} HC)`;
+    lista.appendChild(totals);
+  }
 }
 
 function exportarPDF() {
@@ -351,14 +450,47 @@ function exportarPDF() {
   }
   const doc = new jsPDF();
   doc.text("Historial de comidas", 10, 10);
-  historial.forEach((item, index) => {
-    const hc = item.raciones * 10;
-    doc.text(
-      `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones (${hc.toFixed(1)} HC)`,
-      10,
-      20 + index * 10
-    );
-  });
+
+  // Group by day like the UI.
+  const groups = {};
+  for (const item of historial) {
+    const ts = item.ts || Date.now();
+    const d = new Date(ts);
+    const key = d.toLocaleDateString("es-ES");
+    groups[key] = groups[key] || [];
+    groups[key].push({ ...item, ts });
+  }
+  const days = Object.keys(groups);
+
+  let y = 20;
+  for (const day of days) {
+    doc.text(`Día ${day}`, 10, y);
+    y += 8;
+    let dayRaciones = 0;
+    for (const item of groups[day]) {
+      const ts = new Date(item.ts);
+      const hhmm = ts.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+      const hc = item.raciones * 10;
+      dayRaciones += item.raciones;
+      doc.text(
+        `${hhmm} - ${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones (${hc.toFixed(0)} HC)`,
+        10,
+        y
+      );
+      y += 8;
+      if (y > 280) {
+        doc.addPage();
+        y = 20;
+      }
+    }
+    doc.text(`Total día: ${dayRaciones.toFixed(1)} raciones (${(dayRaciones * 10).toFixed(0)} HC)`, 10, y);
+    y += 12;
+    if (y > 280) {
+      doc.addPage();
+      y = 20;
+    }
+  }
+
   doc.save("historial.pdf");
 }
 
