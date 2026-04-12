@@ -201,7 +201,7 @@
       <div id="historial-container" class="mt-4">
         <div class="d-flex align-items-center justify-content-between">
           <h2 class="mb-0">Historial</h2>
-          <button class="btn btn-outline-danger" onclick="limpiarHistorial()" title="Borra el historial guardado">
+          <button type="button" class="btn btn-outline-danger" onclick="limpiarHistorial()" title="Borra el historial guardado">
             Borrar historial
           </button>
         </div>
@@ -213,6 +213,7 @@
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/quagga.min.js"></script>
     <script src="js/jspdf.min.js"></script>
-    <script src="js/scripts.js"></script>
+    <!-- cache-bust to ensure mobiles pick up latest JS after rapid deploys -->
+    <script src="js/scripts.js?v=2026-04-12-1"></script>
   </body>
 </html>
