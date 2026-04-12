@@ -416,30 +416,43 @@ function renderHistorial() {
     return (isNaN(pb) ? 0 : pb) - (isNaN(pa) ? 0 : pa);
   });
 
+  const todayKey = new Date().toLocaleDateString("es-ES");
+
   for (const day of days) {
-    const header = document.createElement("li");
-    header.textContent = `📅 ${day}`;
-    header.style.fontWeight = "bold";
-    lista.appendChild(header);
+    const items = groups[day] || [];
 
     let dayRaciones = 0;
-    for (const item of groups[day]) {
+    for (const it of items) dayRaciones += Number(it.raciones || 0);
+    const dayHC = dayRaciones * 10;
+
+    const wrapper = document.createElement("li");
+
+    const details = document.createElement("details");
+    details.open = day === todayKey; // open today's group by default
+
+    const summary = document.createElement("summary");
+    summary.style.cursor = "pointer";
+    summary.style.fontWeight = "bold";
+    summary.textContent = `📅 ${day} — ${dayRaciones.toFixed(1)} raciones (${dayHC.toFixed(0)} HC)`;
+
+    const ul = document.createElement("ul");
+    ul.style.marginTop = "6px";
+
+    for (const item of items) {
       const li = document.createElement("li");
       const ts = new Date(item.ts);
       const hhmm = ts.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
       const hc = item.raciones * 10;
-      dayRaciones += item.raciones;
-      li.textContent = `${hhmm} · ${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(
-        1
-      )} raciones (${hc.toFixed(0)} HC)`;
-      lista.appendChild(li);
+      li.textContent = `${hhmm} · ${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones (${hc.toFixed(0)} HC)`;
+      ul.appendChild(li);
     }
 
-    const totals = document.createElement("li");
-    totals.style.opacity = "0.8";
-    totals.style.marginBottom = "10px";
-    totals.textContent = `Total día: ${dayRaciones.toFixed(1)} raciones (${(dayRaciones * 10).toFixed(0)} HC)`;
-    lista.appendChild(totals);
+    details.appendChild(summary);
+    details.appendChild(ul);
+    wrapper.appendChild(details);
+    wrapper.style.marginBottom = "10px";
+
+    lista.appendChild(wrapper);
   }
 }
 
