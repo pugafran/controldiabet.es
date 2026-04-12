@@ -77,13 +77,17 @@ function calcularRaciones() {
 
   let resultadoIndividual = document.createElement("div");
 
+  const hc = carbohidratos * 10;
   resultadoIndividual.innerText =
     "Raciones para " +
     gramos +
     "g de " +
     alimento +
     ": " +
-    carbohidratos.toFixed(1);
+    carbohidratos.toFixed(1) +
+    " (" +
+    hc.toFixed(1) +
+    " HC)";
   resultadoIndividual.style.display = "inline-block";
   resultadoIndividual.style.marginLeft = "5px";
 
@@ -132,8 +136,17 @@ function calcularRacionesBarras(alimento, carbohidratos, indiceGlucemico) {
   cuadradoIndividual.className = "indice-glucemico-individual";
 
   let resultadoIndividual = document.createElement("div");
+  const hc = raciones * 10;
   resultadoIndividual.innerText =
-    "Raciones para " + gramos + "g de " + alimento + ": " + raciones.toFixed(1);
+    "Raciones para " +
+    gramos +
+    "g de " +
+    alimento +
+    ": " +
+    raciones.toFixed(1) +
+    " (" +
+    hc.toFixed(1) +
+    " HC)";
   resultadoIndividual.style.display = "inline-block";
   resultadoIndividual.style.marginLeft = "5px";
 
@@ -176,6 +189,11 @@ function limpiar() {
   totalCarbohidratosPonderados = 0;
   indiceGlucemicoMedio = 0;
   totalComidas = 0;
+
+  // También limpiar el historial persistente.
+  historial = [];
+  localStorage.removeItem("historial");
+  renderHistorial();
 }
 
 function getColor(indiceGlucemico) {
@@ -318,9 +336,10 @@ function renderHistorial() {
   lista.innerHTML = "";
   historial.forEach((item) => {
     const li = document.createElement("li");
+    const hc = item.raciones * 10;
     li.textContent = `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(
       1
-    )} raciones`;
+    )} raciones (${hc.toFixed(1)} HC)`;
     lista.appendChild(li);
   });
 }
@@ -333,8 +352,9 @@ function exportarPDF() {
   const doc = new jsPDF();
   doc.text("Historial de comidas", 10, 10);
   historial.forEach((item, index) => {
+    const hc = item.raciones * 10;
     doc.text(
-      `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones`,
+      `${item.gramos}g de ${item.alimento}: ${item.raciones.toFixed(1)} raciones (${hc.toFixed(1)} HC)`,
       10,
       20 + index * 10
     );
