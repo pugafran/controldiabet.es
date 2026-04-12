@@ -68,7 +68,7 @@
       <div class="container-fluid mb-3" style="padding: 0">
         <div class="form-inline">
           <div
-            class="d-flex w-100 justify-content-center justify-content-sm-start flex-column flex-sm-row"
+            class="d-flex w-100 justify-content-center justify-content-sm-start flex-column flex-sm-row flex-wrap"
           >
             <input
               id="miInput"
@@ -78,18 +78,21 @@
               placeholder="Introduce el alimento"
             />
             <div class="w-100 my-2" style="max-width: 100%; min-width: 200px">
-              <div class="d-flex gap-2">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <button type="button" class="btn btn-light" onclick="ajustarGramos(-10)">-10</button>
+                </div>
                 <input
                   id="gramos"
                   type="number"
                   class="form-control"
-                  style="max-width: 100%; min-width: 140px"
                   min="0"
                   step="1"
                   placeholder="Introduce los gramos"
                 />
-                <button type="button" class="btn btn-light" style="min-width: 56px" onclick="ajustarGramos(-10)">-10</button>
-                <button type="button" class="btn btn-light" style="min-width: 56px" onclick="ajustarGramos(10)">+10</button>
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-light" onclick="ajustarGramos(10)">+10</button>
+                </div>
               </div>
             </div>
             <div class="d-flex w-100 justify-content-center align-items-center">
@@ -119,20 +122,7 @@
               >
                 Limpiar
               </button>
-              <button
-                type="button"
-                class="btn btn-outline-danger col-lg-2"
-                style="
-                  max-width: 160px;
-                  min-width: 160px;
-                  border-radius: 0px;
-                  max-height: 40px;
-                "
-                onclick="limpiarHistorial()"
-                title="Borra el historial guardado"
-              >
-                Borrar historial
-              </button>
+<!-- Borrar historial button moved to Historial section -->
               <button
                 type="button"
                 class="btn btn-secondary col-lg-2 mx-2"
@@ -209,14 +199,14 @@
       </div>
       <div id="resultado"></div>
       <div id="historial-container" class="mt-4">
-        <h2>Historial</h2>
-        <ul id="historial"></ul>
-        <button
-          class="export-button mt-2"
-          onclick="exportarPDF()"
-        >
-          Exportar historial a PDF
-        </button>
+        <div class="d-flex align-items-center justify-content-between">
+          <h2 class="mb-0">Historial</h2>
+          <button class="btn btn-outline-danger" onclick="limpiarHistorial()" title="Borra el historial guardado">
+            Borrar historial
+          </button>
+        </div>
+        <ul id="historial" class="mt-3"></ul>
+        <button class="export-button mt-2" onclick="exportarPDF()">Exportar historial a PDF</button>
       </div>
     </div>
     <script src="js/jquery-3.7.0.min.js"></script>
